@@ -25,6 +25,8 @@ build-011 on, `collection.ini` holds paths relative to MP1's folder.
 
 | 013 | Settings shared: MP2/MP3 copy MP1's `general/graphics/sound/controls.json` over their own before `main` (static initializer in `src/collection_game.cpp`), a thread copies their changes back to MP1's within 1 s, and again before returning to MP1. MP3 Star Lift opens on "How many will play this time?" (0x1503): msetup's message helper (`func_8010B82C_msetup`) skips 0x1500 Welcome and 0x1502 Tumble's two pages, its wait helper (`func_8010B858_msetup`) returns at once after them. | by script: Star Lift opening; settings pull at start, push while running (file level) |
 
+| 014 ★ | Collection launcher `MarioPartyCollection.exe` (`src/launcher/`, `tools/build_launcher.cmd`): starts MP1 (`--boot` when its ROM is stored), black topmost backdrop over the outgoing window's place (monitor when fullscreen) on each handover (`src/collection_window.hpp`: WM_COPYDATA 'MPCS'), next window moved to the same place, backdrop hidden 1.5 s after it shows; quits 5 s after the last game closes. Handover saves the actual window mode into MP1's `graphics.json` (F11 doesn't save it). MP1/MP2 debug menus: blue window (background 0xC8). MP1/MP2 P1 = controller 1's player (port u8 +3). | by script (`capture_screen.ps1`): MP1↔MP3 windowed (same place and size, black between) and fullscreen (black, no desktop or taskbar); MP1→MP2 party, MP2 menu blue, Add 20 / Max Stars on Mario (3rd in turn order), End Party → MP1; MP1 menu blue, Add 20 |
+
 ★ milestone.
 
 ## Not yet verified

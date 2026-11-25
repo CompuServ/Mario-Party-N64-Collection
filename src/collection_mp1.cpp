@@ -33,6 +33,7 @@
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include "collection_window.hpp"
 #endif
 
 namespace fs = std::filesystem;
@@ -178,6 +179,8 @@ extern "C" void recomp_collection_launch(uint8_t* rdram, recomp_context* ctx) {
         fprintf(stderr, "collection: couldn't write %ls\n", handoff.c_str());
         return;
     }
+    // The window mode kept for the next game, and the launcher's black backdrop up (collection_window.hpp).
+    collection_window::before_handover();
     if (!start_exe(target)) {
         std::error_code ec;
         fs::remove(handoff, ec);

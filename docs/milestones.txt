@@ -3,3 +3,4 @@
 5   # all three games launch (MP2 Horror Land, MP3 Star Lift)
 8   # MP1 debug menu
 10  # MP2 debug menu, full MP2 -> MP1 round trip
+14  # collection launcher: black backdrop between games, window/fullscreen kept

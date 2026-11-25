@@ -2,6 +2,7 @@
 # Never commit anything ROM-derived (ROMs, recompiled code, builds) or third-party packages.
 /recomp/
 /bin/
+/build/
 /prebuilt/
 /roms/
 /emu/

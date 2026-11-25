@@ -40,6 +40,7 @@
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include "collection_window.hpp"
 #endif
 
 namespace fs = std::filesystem;
@@ -275,6 +276,8 @@ extern "C" void recomp_collection_return(uint8_t* rdram, recomp_context* ctx) {
     }
     // Mario Party 1 reads the settings as it starts: any change made here goes back first.
     settings_to_master();
+    // The window mode kept for Mario Party 1, and the launcher's black backdrop up (collection_window.hpp).
+    collection_window::before_handover();
     if (!start_exe(mp1)) {
         fields["state"] = "out";
         write_fields(handoff_path(), fields);

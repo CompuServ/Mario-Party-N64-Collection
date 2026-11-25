@@ -4,6 +4,7 @@ build-002, ...), so every build stays runnable on its own and can be compared wi
 last 10 builds plus the milestones listed in docs\milestones.txt (one build number a line).
 
 Each bin\build-NNN folder holds:
+  MarioPartyCollection.exe  the collection's launcher (start here): starts Mario Party 1, black between games.
   MarioPartyRecompiled.exe + SDL2.dll, dxil.dll, dxcompiler.dll, recompcontrollerdb.txt, LICENSE, assets\
       Mario Party 1, what tools/release.sh puts in a release; it runs from its own folder (double-click the exe).
       Start the collection here.
@@ -87,6 +88,15 @@ foreach ($g in $games) {
 }
 $collectionCommit = & $git -C (Split-Path $Out) log -1 --format="%h %s" 2>$null
 if ($collectionCommit) { $info += "collection: $collectionCommit" }
+
+# The collection's launcher (tools\build_launcher.cmd), the way to start the collection: MP1 plus the black backdrop
+# between games.
+$launcher = "$PSScriptRoot\..\build\launcher\MarioPartyCollection.exe"
+if (Test-Path $launcher) {
+    Copy-Item $launcher $dest
+} else {
+    Write-Warning "No launcher at $launcher (tools\build_launcher.cmd): this build has none."
+}
 
 # Where MP1's handoff (src/collection_mp1.cpp) finds the other games: this build's own, relative to MP1's folder.
 @"

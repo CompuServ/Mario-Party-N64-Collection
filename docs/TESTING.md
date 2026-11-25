@@ -20,6 +20,13 @@ Space = A, LShift = B, E = L, R = R, WASD = stick. A `build\` exe needs `-WorkDi
 A milestone pass runs the whole loop: MP1 village → Warp Pipe → Pick a Mario Party → MP2 (and MP3) → debug menu
 End Party → results → back in MP1 with the totals added; Quit Game and Reset from each game; B paths.
 
+## Transitions between games
+
+Start the build's `MarioPartyCollection.exe`. A handoff file with `state=quit` makes MP1 boot straight into the
+village (skips its title and file screens). `tools\capture_screen.ps1 -OutDir <dir> -Count 40 -IntervalMs 350`
+captures the whole screen (what the player sees, desktop included) and saves a contact sheet; run it as a job while
+`drive_game.ps1 -Attach` presses the key that starts the handover. F11 toggles fullscreen (`key:F11`).
+
 ## Checking addresses on the real game: ares
 
 ares (`emu\ares-148-release`) runs the original ROM with a GDB server (Settings > Debug; port 9123). Use it to confirm

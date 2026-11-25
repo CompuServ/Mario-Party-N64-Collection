@@ -5,7 +5,7 @@ Space = A, LShift = B, Q = Z, E = L, R = R, WASD = stick).
 
   drive_game.ps1 -Exe <path> -Steps "wait:15","key:Enter","wait:2","shot:title.png",... -OutDir <folder> [-Keep]
 
-Steps: wait:<seconds>, key:<Enter|Space|LShift|E|R|Q|W|A|S|D|Up|Down|Left|Right>[:<hold seconds>],
+Steps: wait:<seconds>, key:<Enter|Space|LShift|E|R|Q|W|A|S|D|Up|Down|Left|Right|F11>[:<hold seconds>],
 keys:<key>+<key>:<hold seconds> (held together), shot:<file.png>. The game is closed at the end unless -Keep.
 #>
 param(
@@ -32,7 +32,7 @@ public class GameWin {
 "@
 [GameWin]::SetProcessDPIAware() | Out-Null
 $vk = @{ Enter = 0x0D; Space = 0x20; LShift = 0xA0; E = 0x45; R = 0x52; Q = 0x51; W = 0x57; A = 0x41; S = 0x53; D = 0x44;
-         Up = 0x26; Down = 0x28; Left = 0x25; Right = 0x27 }
+         Up = 0x26; Down = 0x28; Left = 0x25; Right = 0x27; F11 = 0x7A }
 New-Item -ItemType Directory $OutDir -Force | Out-Null
 $exePath = (Resolve-Path $Exe).Path
 if ($WorkDir -eq "") { $WorkDir = Split-Path $exePath }
