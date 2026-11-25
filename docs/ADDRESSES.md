@@ -78,5 +78,13 @@ after Bowser Land. Text space is 0x20. `tools\dump_mp2_messages.ps1` reads messa
 
 Overlays: 0x7A → 0x79 title, 0x77/0x78 Star Lift (`msetup`), 0x4F end of game, `boardresult2` results.
 
+Star Lift (msetup) messages, through `func_8010B82C_msetup` (sets Tumble's window 0x8011A890's message) and
+`func_8010B858_msetup` (waits while `func_8005E0C0` says the window is busy): 0x1500 "Welcome! This Star Lift goes to
+the Battle Royal Maps!" (first visit only, game flag 0x1A, `func_80107FB4_msetup` 0x8010810C), 0x1502 "I'm Tumble…" +
+"OK! It's time to set up the game." (two pages), 0x1503 "How many will play this time?", 0x1504 the player count
+picker's caption, 0x1508 "1 Player and 3 Computer Characters", 0x1509 "Choose which character(s)…", 0x150D "Choose
+which 3 characters the computer will control.", 0x150E/0x1512 the characters' lines. A `collection_trace` native
+logging a hook's argument to stderr found these (removed again; easy to add back for other screens).
+
 Text (as MP2): 0x0B start, ASCII with 0x20 space, 0x0A newline, 0x0C…0x0D a choice, null end. Messages are compressed
 in the ROM (English table 0x121CAA0); a string pointer above 0x80000000 works wherever a message ID does.

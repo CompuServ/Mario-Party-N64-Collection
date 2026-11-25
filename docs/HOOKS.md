@@ -65,6 +65,8 @@ The survey's hooks come first in `us.toml`; the collection's title redirect is c
 | func_800FF158_shared_board_00112D78 | 0x800FF1B0 | debug menu hold check (pause watcher); opened → `goto L_800FF178` |
 | func_800FF158_shared_board_00112D78 | 0x800FF2D0 | R (map) suppressed while L is held |
 | func_80105DB4_msetup | 0x80105E08 | B on the Star Lift → back to MP1 |
+| func_8010B82C_msetup | 0x8010B82C | Tumble's message helper: skip 0x1500 / 0x1502 in collection mode (`collection_lift_message`) |
+| func_8010B858_msetup | 0x8010B858 | Tumble's wait helper: returns 0 after a skipped message (`collection_lift_wait`) |
 
 ## Natives (end of patches/syms.ld)
 

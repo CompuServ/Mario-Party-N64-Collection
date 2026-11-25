@@ -14,13 +14,24 @@
 //
 // The handoff file: %LOCALAPPDATA%\MarioPartyCollection\handoff.txt, key=value lines (version, session, target, mode,
 // state, stars, coins, mp1). Windows only for now.
+//
+// Settings: Mario Party 1's are the collection's one copy. The settings menu's files (general.json, graphics.json,
+// sound.json, controls.json: the same options in all three recomps) live in each game's own folder
+// (%LOCALAPPDATA%\<exe name>\, RecompFrontend's app folder), read once at start and written when changed. Before this
+// game's main runs (a static object's constructor), Mario Party 1's (%LOCALAPPDATA%\MarioPartyRecompiled\) are copied
+// over this game's, so it starts with them; then a thread copies any of this game's that changes back over Mario
+// Party 1's within a second, and the return to Mario Party 1 copies them once more before starting it. Saves, the
+// stored ROM and mods stay each game's own.
 
 #include <cstdio>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
+#include <chrono>
 #include <map>
+#include <mutex>
 #include <string>
+#include <thread>
 
 #include "recomp.h"
 #include "librecomp/helpers.hpp"
@@ -118,6 +129,101 @@ namespace {
         }
     }
 
+    // ---- Shared settings ----
+    const char* const shared_settings[] = { "general.json", "graphics.json", "sound.json", "controls.json" };
+
+    fs::path local_app_data() {
+#ifdef _WIN32
+        const wchar_t* local = _wgetenv(L"LOCALAPPDATA");
+        if (local != nullptr) {
+            return fs::path(local);
+        }
+#endif
+        return {};
+    }
+
+    // This game's settings folder (RecompFrontend's app folder: the exe's name) and Mario Party 1's.
+    fs::path own_settings_folder() {
+#ifdef _WIN32
+        wchar_t buffer[MAX_PATH * 4];
+        DWORD length = GetModuleFileNameW(nullptr, buffer, (DWORD)(sizeof(buffer) / sizeof(buffer[0])));
+        fs::path local = local_app_data();
+        if (length > 0 && !local.empty()) {
+            return local / fs::path(std::wstring(buffer, length)).stem();
+        }
+#endif
+        return {};
+    }
+
+    fs::path master_settings_folder() {
+        fs::path local = local_app_data();
+        return local.empty() ? fs::path() : local / L"MarioPartyRecompiled";
+    }
+
+    std::mutex settings_mutex;
+    std::map<std::string, fs::file_time_type> settings_synced;
+
+    fs::file_time_type write_time(const fs::path& path) {
+        std::error_code ec;
+        fs::file_time_type time = fs::last_write_time(path, ec);
+        return ec ? fs::file_time_type::min() : time;
+    }
+
+    // This game's changed settings files over Mario Party 1's.
+    void settings_to_master() {
+        std::lock_guard<std::mutex> lock(settings_mutex);
+        fs::path own = own_settings_folder();
+        fs::path master = master_settings_folder();
+        if (own.empty() || master.empty() || own == master) {
+            return;
+        }
+        for (const char* name : shared_settings) {
+            fs::path from = own / name;
+            fs::file_time_type time = write_time(from);
+            if (time == fs::file_time_type::min() || settings_synced[name] == time) {
+                continue;
+            }
+            std::error_code ec;
+            fs::create_directories(master, ec);
+            fs::copy_file(from, master / name, fs::copy_options::overwrite_existing, ec);
+            if (!ec) {
+                settings_synced[name] = time;
+            }
+        }
+    }
+
+    // At start, before main: Mario Party 1's settings over this game's (this game's seed Mario Party 1's where it has
+    // none yet), then the thread that sends this game's changes back.
+    struct SharedSettings {
+        SharedSettings() {
+            fs::path own = own_settings_folder();
+            fs::path master = master_settings_folder();
+            if (own.empty() || master.empty() || own == master) {
+                return;
+            }
+            std::error_code ec;
+            fs::create_directories(own, ec);
+            for (const char* name : shared_settings) {
+                fs::path from = master / name;
+                fs::path to = own / name;
+                if (fs::exists(from, ec)) {
+                    fs::copy_file(from, to, fs::copy_options::overwrite_existing, ec);
+                } else if (fs::exists(to, ec)) {
+                    fs::create_directories(master, ec);
+                    fs::copy_file(to, from, fs::copy_options::overwrite_existing, ec);
+                }
+                settings_synced[name] = write_time(to);
+            }
+            std::thread([] {
+                while (true) {
+                    std::this_thread::sleep_for(std::chrono::seconds(1));
+                    settings_to_master();
+                }
+            }).detach();
+        }
+    };
+    SharedSettings shared_settings_at_start;
+
 #ifdef _WIN32
     bool start_exe(const fs::path& exe) {
         std::wstring command = L"\"" + exe.wstring() + L"\" --boot";
@@ -167,6 +273,8 @@ extern "C" void recomp_collection_return(uint8_t* rdram, recomp_context* ctx) {
         fprintf(stderr, "collection: couldn't write the handoff file\n");
         return;
     }
+    // Mario Party 1 reads the settings as it starts: any change made here goes back first.
+    settings_to_master();
     if (!start_exe(mp1)) {
         fields["state"] = "out";
         write_fields(handoff_path(), fields);

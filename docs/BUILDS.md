@@ -23,9 +23,13 @@ build-011 on, `collection.ini` holds paths relative to MP1's folder.
 | 011 | Reorganization only: folders without spaces, MP2/MP3 compile the one `src\collection_game.cpp`, `collection.ini` relative to MP1's folder (new in `collection_mp1.cpp`), recomps' changes on branch `collection`. Full rebuild of all three. | MP1 → MP3 launch (by hand) |
 | 012 ★ | MP3 board debug menu: L+R 3 s at a turn's start (gate `mbCameraBtnF` 0x800CDD58 + items flag 0x800CDD64; hook 0x800FF1B0 in the pause watcher), opened through `MBPauseCreate` with its menu process swapped (0x800F1FB4); End Party / Reset through the pause's quit branch (0x800F20E0): End Party queues 0x4F as the exit watcher does for mask 0x20. P1 = controller 1's player (MP3 sorts `GwPlayer` into turn order). | by script: blocked in Koopa Bank, CPU turns, minigame instructions and play; Add 20 / Max Coins / Max Stars; End Party → results → MP1 +99 stars +30 coins saved; Reset → MP1 boot |
 
+| 013 | Settings shared: MP2/MP3 copy MP1's `general/graphics/sound/controls.json` over their own before `main` (static initializer in `src/collection_game.cpp`), a thread copies their changes back to MP1's within 1 s, and again before returning to MP1. MP3 Star Lift opens on "How many will play this time?" (0x1503): msetup's message helper (`func_8010B82C_msetup`) skips 0x1500 Welcome and 0x1502 Tumble's two pages, its wait helper (`func_8010B858_msetup`) returns at once after them. | by script: Star Lift opening; settings pull at start, push while running (file level) |
+
 ★ milestone.
 
 ## Not yet verified
+
+- Settings changed through the in-game menu in MP2/MP3 reaching MP1 (tested by editing the files, not through the menu).
 
 - MP2 returning real totals after the latch fix (0x80107714).
 - MP3's Quit Game return since its hook became `collection_pause_quit` (build-012).
