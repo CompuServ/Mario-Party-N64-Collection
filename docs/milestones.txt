@@ -1,0 +1,5 @@
+# Milestone builds: kept in bin\ when tools\package_build.ps1 trims to the last 10. One build number a line.
+1   # Warp Pipe cursor default
+5   # all three games launch (MP2 Horror Land, MP3 Star Lift)
+8   # MP1 debug menu
+10  # MP2 debug menu, full MP2 -> MP1 round trip

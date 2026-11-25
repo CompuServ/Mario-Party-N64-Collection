@@ -1,0 +1,18 @@
+# The collection's repo tracks only its own files: CLAUDE.md, src/, tools/, docs/.
+# Never commit anything ROM-derived (ROMs, recompiled code, builds) or third-party packages.
+/recomp/
+/bin/
+/prebuilt/
+/roms/
+/emu/
+/ref/
+/third_party/
+/.vs/
+*.z64
+*.v64
+*.n64
+*.eep
+*.sra
+*.fla
+*.elf
+saves*/
