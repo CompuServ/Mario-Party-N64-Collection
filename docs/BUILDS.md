@@ -20,15 +20,13 @@ build-011 on, `collection.ini` holds paths relative to MP1's folder.
 | 009 | Setup opens on "Pick a Mario Party" (0x284 replaced at 0x800F77F4; Mini-Game Stadium's 0x26C untouched). Village's scripted A cleared once the village is up (it had leaked into setup's window). Bank stars ";%5d" (0x800F6874), Item List stars "%4d" (0x8005A73C). | by hand |
 | 010 ★ | MP2 board debug menu: gate on turn-start flag 0x800FA198; opened through MP2's own pause with its menu process swapped at 0x8005DB1C; End Party/Reset via the pause's quit branch 0x8005DB90 with the board still paused (after the pause it crashed in SprKill). MP2's end-of-party totals latched at 0x80107714 (read at 0x80107794 they were 0). MP1's menu gated on 0x800EE320, holding the turn like its pause. Handoff `state=reset`. Full MP2→MP1 round trip ran by script (totals 0 before the latch fix). | by hand ("It worked") |
 
-| 011 | Reorganization only: folders without spaces, MP2/MP3 compile the one `src\collection_game.cpp`, `collection.ini` relative to MP1's folder (new in `collection_mp1.cpp`), recomps' changes on branch `collection`. Full rebuild of all three. | built; not yet run |
+| 011 | Reorganization only: folders without spaces, MP2/MP3 compile the one `src\collection_game.cpp`, `collection.ini` relative to MP1's folder (new in `collection_mp1.cpp`), recomps' changes on branch `collection`. Full rebuild of all three. | MP1 → MP3 launch (by hand) |
+| 012 ★ | MP3 board debug menu: L+R 3 s at a turn's start (gate `mbCameraBtnF` 0x800CDD58 + items flag 0x800CDD64; hook 0x800FF1B0 in the pause watcher), opened through `MBPauseCreate` with its menu process swapped (0x800F1FB4); End Party / Reset through the pause's quit branch (0x800F20E0): End Party queues 0x4F as the exit watcher does for mask 0x20. P1 = controller 1's player (MP3 sorts `GwPlayer` into turn order). | by script: blocked in Koopa Bank, CPU turns, minigame instructions and play; Add 20 / Max Coins / Max Stars; End Party → results → MP1 +99 stars +30 coins saved; Reset → MP1 boot |
 
 ★ milestone.
 
 ## Not yet verified
 
 - MP2 returning real totals after the latch fix (0x80107714).
-- MP3's end-of-party and Quit Game returns in play (`state=returned` / `state=quit`).
-
-## Next
-
-- MP3 board debug menu through MP3's own pause (MBPauseCreate), exit mask 0x80105664 = 0x20, MBPlayerCoinAdd(0, n).
+- MP3's Quit Game return since its hook became `collection_pause_quit` (build-012).
+- Whether MP1's and MP2's "P1" debug items hit controller 1's player: MP3 sorts its players into turn order, so slot 0 was whoever went first; MP1 and MP2 use slot 0 too.

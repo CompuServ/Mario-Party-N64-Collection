@@ -55,7 +55,19 @@ after Bowser Land. Text space is 0x20. `tools\dump_mp2_messages.ps1` reads messa
 
 | Address | Type | What |
 |---|---|---|
-| 0x800D1108 | struct[4] | `GwPlayer`, stride 0x38: stat u8 +0x04 (bit 0 = CPU), coin s16 +0x0A, star s8 +0x0E |
+| 0x800D1108 | struct[4] | `GwPlayer`, stride 0x38: pad u8 +0x02 (controller), stat u8 +0x04 (bit 0 = CPU), coin s16 +0x0A, star s8 +0x0E. In turn order once the board has drawn it |
+| 0x800C9520 | u16[4] | buttons pressed this frame |
+| 0x800D5546 | u16[4] | buttons held (L 0x20, R 0x10) |
+| 0x800CDD58 | s16 | `mbCameraBtnF`: 1 only while the dice block waits (with 0x800CDD64) |
+| 0x800CDD64 | s16 | items allowed (B) at the dice block |
+| 0x800D037C | s16 | `mbItemBtnF` |
+| 0x80105556 | s16 | pause quit flag (`MBPauseCreate` leaves the board when set) |
+| 0x800D6A48 | s16 | game over noted (set with exit mask 0x20) |
+| 0x80105666 | s16 | exit watcher: fade the music |
+| func_800FF158_shared_board_00112D78 | func | board pause watcher (Start/B/R/Z) |
+| func_800F93A4_shared_board | func | board exit watcher (mask 0x20 → MBOvlCall(0x4F, 0, 0x4190)) |
+| MBPauseQuitMesCreate_00103A78 | func | (message or string pointer, y): window sized to the text |
+| func_8005E1D8_main | func | choice (window, 0, 0); func_8005FE54_main(window, 1 << port) limits it to one controller |
 | 0x800CE200 | s32 | current overlay (omovl) |
 | 0x800CD058 | | playMode (1 = Battle Royal) |
 | 0x800CC15C | | file 1 name bytes |
@@ -64,4 +76,7 @@ after Bowser Land. Text space is 0x20. `tools\dump_mp2_messages.ps1` reads messa
 | MBPauseCreate | func | pause |
 | MBPlayerCoinAdd | func | (player, n) |
 
-Overlays: 0x7A → 0x79 title, 0x77/0x78 Star Lift (`msetup`), `boardresult2` results.
+Overlays: 0x7A → 0x79 title, 0x77/0x78 Star Lift (`msetup`), 0x4F end of game, `boardresult2` results.
+
+Text (as MP2): 0x0B start, ASCII with 0x20 space, 0x0A newline, 0x0C…0x0D a choice, null end. Messages are compressed
+in the ROM (English table 0x121CAA0); a string pointer above 0x80000000 works wherever a message ID does.

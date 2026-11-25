@@ -28,7 +28,7 @@ Back up saves (`%LOCALAPPDATA%\MarioPartyRecompiled\`) before anything that writ
 - Final design: one host program (window, RT64, audio, input) with MP1/MP2/MP3 as separate modules, each its own runtime and RDRAM. **Alpha:** switch programs (MP1 launches MP2/MP3 with `--boot` and exits; they relaunch MP1) through `%LOCALAPPDATA%\MarioPartyCollection\handoff.txt` (`docs\handoff-design.md`).
 - Totals flow one way: at Start on the last results page, MP2/MP3 send their human (non-CPU) players' star and coin sums; MP1 adds them at boot and saves only through its own save routine (EEPROM checksum). Limits: stars 0–9,999, coins 0–99,999, excess dropped. MP2/MP3 save normally. Quit Game → village, nothing added; debug Reset → MP1 title.
 - MP2 in collection mode skips Toad's greeting and the Rules Land tutorial. MP1 → MP1 adds no transition; MP2/MP3 picks fade out with MP1's wipe and music fade first.
-- Debug menu per game: L+R ≥ 3 s on the board map only (never minigames, their instructions or board events), the game's own window and font: End Party Mode Immediately, Add 20 Coins to P1, Max Coins P1, Max Stars P1, Reset last. Opened through the game's own pause so the turn freezes. MP1, MP2 done; MP3 next.
+- Debug menu per game: L+R ≥ 3 s on the board map only (never minigames, their instructions or board events), the game's own window and font: End Party Mode Immediately, Add 20 Coins to P1, Max Coins P1, Max Stars P1, Reset last. Opened through the game's own pause so the turn freezes. MP1, MP2, MP3 done.
 
 ## Status
 

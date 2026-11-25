@@ -60,7 +60,10 @@ The survey's hooks come first in `us.toml`; the collection's title redirect is c
 |---|---|---|
 | omOvlGotoEx | 0x80048228 | 0x7A → 0x79 becomes file 1 "Mario" + Star Lift (0x78) |
 | func_801096AC_boardresult2 | 0x801096DC | party over → back to MP1 |
-| MBPauseCreate | 0x800F20E0 | Quit Game → back to MP1 |
+| MBPauseCreate | 0x800F20E0 | pause quit branch: `collection_pause_quit` (Quit Game / debug Reset → MP1; End Party queues 0x4F, a0 = 1) |
+| MBPauseCreate | 0x800F1FB4 | omAddPrcObj(MBPauseMain) → `collection_debug_process` while the debug menu opens |
+| func_800FF158_shared_board_00112D78 | 0x800FF1B0 | debug menu hold check (pause watcher); opened → `goto L_800FF178` |
+| func_800FF158_shared_board_00112D78 | 0x800FF2D0 | R (map) suppressed while L is held |
 | func_80105DB4_msetup | 0x80105E08 | B on the Star Lift → back to MP1 |
 
 ## Natives (end of patches/syms.ld)
