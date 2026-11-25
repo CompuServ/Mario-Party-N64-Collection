@@ -5,10 +5,10 @@ Mario Party 1, 2 and 3 in one compilation for Windows (first) and Linux, built f
 ## Layout
 
 - `src/` the collection's natives: `collection_mp1.cpp` (MP1), `collection_game.cpp` (MP2 and MP3 compile this one copy; never copy it into a recomp).
-- `tools/` `build_recomp.cmd`, `package_build.ps1`, `drive_game.ps1`, `dump_mp1_messages.ps1`, `dump_mp2_messages.ps1`.
+- `tools/` `build_recomp.cmd`, `package_build.ps1`, `drive_game.ps1`, `ares_gdb.ps1` (memory through ares's GDB server, port 9123), `dump_mp1_messages.ps1`, `dump_mp2_messages.ps1`.
 - `docs/` `BUILDS.md` (history, what's tested, next), `ADDRESSES.md`, `HOOKS.md`, `TESTING.md`, `REFERENCES.md`, `handoff-design.md`, `milestones.txt`.
 - `recomp/mp1|mp2|mp3` the recomp repos (submodules initialised; the collection's changes on branch `collection`): `us.toml` (section "Mario Party N64 Collection"), `patches/collection.c`, natives at the end of `patches/syms.ld`, `CMakeLists.txt`. `build/decomp/*.elf` is the decomp's ELF (reference only).
-- `bin/build-NNN` packaged test builds (last 10 + `docs/milestones.txt`). `prebuilt/` upstream release exes. `roms/` the user's dumps. `ref/` N64 SDK and docs (reference only). `emu/` Project64. `third_party/` Mario Party Tools, PartyPlanner64, MSYS2 installer.
+- `bin/build-NNN` packaged test builds (last 10 + `docs/milestones.txt`). `prebuilt/` upstream release exes. `roms/` the user's dumps. `ref/` N64 SDK and docs (reference only). `emu/` ares 148 (GDB server) and Project64. `third_party/` upstream N64Recomp, N64ModernRuntime, RecompFrontend, rt64, splat source (reading only: builds use each recomp's pinned `lib/` submodules), Ghidra 12.2 + N64LoaderWV, Mario Party Tools, PartyPlanner64. The decomps' source is in each recomp's `lib/marioparty*`. See `docs/REFERENCES.md`.
 - Git: the root repo tracks `CLAUDE.md`, `src/`, `tools/`, `docs/` only (`.gitignore` excludes the rest). Each recomp commits only the collection's files on `collection`.
 
 ## Building
