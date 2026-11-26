@@ -32,3 +32,9 @@ Upstream source for reading, not for building: each recomp builds the copy pinne
 - `ref\n64-sdk` (libultra manual `man-v5-1`, `ultra` headers), `ref\n64-docs`, `ref\n64-demos`.
 
 ares saves its EEPROMs beside the ROMs (`roms\*.eeprom`): those are ares's, separate from the recomps' saves.
+
+## Local references (docs\references, not committed)
+
+Super Mario Wiki pages saved as PDF: Mario Party 1, 2, 3, the series, boards, and each game's minigame list (what
+each minigame does, its kind and coin rules). Also screenshots of Mario Party 2's rules screen, practice armed and not.
+Kept out of git (`.gitignore`): they hold the games' pictures.

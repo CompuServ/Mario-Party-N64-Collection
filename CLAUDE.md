@@ -30,6 +30,7 @@ Back up saves (`%LOCALAPPDATA%\MarioPartyRecompiled\`) before anything that writ
 - Settings: MP1's are the master copy (`%LOCALAPPDATA%\MarioPartyRecompiled\` general/graphics/sound/controls.json). MP2/MP3 copy them in at start and copy their own changes back (`src/collection_game.cpp`); saves, stored ROMs and mods stay per game.
 - MP2 in collection mode skips Toad's greeting and the Rules Land tutorial. MP3 in collection mode opens the Star Lift on "How many will play this time?". MP1 → MP1 adds no transition; MP2/MP3 picks fade out with MP1's wipe and music fade first.
 - Graphics cache: `src/collection_cache.hpp` pulls pictures one game reuses from another's stored ROM into `%LOCALAPPDATA%\MarioPartyCollection\cache\` at MP1's start (never committed or shipped); MP1's DataRead serves IDs 0x02xxxxxx (MP2) from it. MP1's practice uses MP2's pills and banner, falling back to its own text windows.
+- Minigames never take coins in MP1 (results get no losses); Crane Game's crane wins 20 instead of a third of a player's coins.
 - Debug menu per game: L+R ≥ 3 s on the board map only (never minigames, their instructions or board events), the game's own window and font: End Party Mode Immediately, Add 20 Coins to P1, Max Coins P1, Max Stars P1, Reset last. Opened through the game's own pause so the turn freezes; a hold on the player's start banner arms it for the dice block. MP1, MP2, MP3 done.
 
 ## Status

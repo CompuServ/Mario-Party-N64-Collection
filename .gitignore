@@ -17,3 +17,5 @@
 *.fla
 *.elf
 saves*/
+# Reference PDFs and screenshots (Super Mario Wiki pages, game screenshots): kept locally, not committed.
+/docs/references/
