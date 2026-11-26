@@ -50,7 +50,8 @@ text = "ctx->r5 = 0;"
 | func_800FA3A4_ResultsScene / _ResultsEternalStar2 | 0x800FA584 | bank stars kept to 9,999 instead of 100 |
 | func_800FF0A0_AdventureModeSetup | 0x800FF320 | new party: message speed Fast (GwSystem+0x24 = 2) |
 | func_800F7008_MushroomShop | 0x800F7038 | lock function skipped: every item not yet bought for sale |
-| 0x7B column moves (func_800F6DCC, F72B0, F75C0 x2, F7914, F7CCC) | 0x800F6ECC, 0x800F7598, 0x800F7798, 0x800F78C8, 0x800F7A20, 0x800F7D74 | Stadium coin towers: empty column hidden |
+| func_8005A4C0 / func_8005AA88 | 0x8005A99C / 0x8005AB4C, 0x8005ABA0, 0x8005AC20 | village Start pages: Records page made, 960-wide cycle, moved, removed |
+| 0x7B column moves (func_800F6DCC, F72B0, F75C0 x2, F7914, F7CCC) | 0x800F6ECC, 0x800F7598, 0x800F7798, 0x800F78C8, 0x800F7A20, 0x800F7D74 | Stadium coin towers: empty column hidden, a low column kept above the floor and scaled (0x800F6EF8 keeps the scale) |
 | DataRead | 0x800145B0 | ID with a game in the top byte (2 = MP2) served from the graphics cache |
 | omOvlReturnEx | 0x8005DFB8 | skipped once a practice was quit with R (no second return) |
 
