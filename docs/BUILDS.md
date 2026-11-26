@@ -27,9 +27,13 @@ build-011 on, `collection.ini` holds paths relative to MP1's folder.
 
 | 014 ★ | Collection launcher `MarioPartyCollection.exe` (`src/launcher/`, `tools/build_launcher.cmd`): starts MP1 (`--boot` when its ROM is stored), black topmost backdrop over the outgoing window's place (monitor when fullscreen) on each handover (`src/collection_window.hpp`: WM_COPYDATA 'MPCS'), next window moved to the same place, backdrop hidden 1.5 s after it shows; quits 5 s after the last game closes. Handover saves the actual window mode into MP1's `graphics.json` (F11 doesn't save it). MP1/MP2 debug menus: blue window (background 0xC8). MP1/MP2 P1 = controller 1's player (port u8 +3). | by script (`capture_screen.ps1`): MP1↔MP3 windowed (same place and size, black between) and fullscreen (black, no desktop or taskbar); MP1→MP2 party, MP2 menu blue, Add 20 / Max Stars on Mario (3rd in turn order), End Party → MP1; MP1 menu blue, Add 20 |
 
+| 015 | Debug menu L+R hold counted on every pause-watcher frame (MP1 0x80058394, MP2 0x800669CC, MP3 0x800FF190: before the pause-allowed checks), so a hold on a player's "MARIO START" banner counts; a completed hold stays armed through the release and the menu opens as soon as the dice block is up (the banner can't pause in any of the three). | by script in MP2 (hold on banner, release, A → menu at once); MP1/MP3 same code, not run |
+
 ★ milestone.
 
 ## Not yet verified
+
+- build-015's banner hold in MP1 and MP3 (same logic as MP2, which passed).
 
 - Settings changed through the in-game menu in MP2/MP3 reaching MP1 (tested by editing the files, not through the menu).
 
