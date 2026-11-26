@@ -4,7 +4,7 @@ Mario Party 1, 2 and 3 in one compilation for Windows (first) and Linux, built f
 
 ## Layout
 
-- `src/` the collection's natives: `collection_mp1.cpp` (MP1), `collection_game.cpp` (MP2 and MP3 compile this one copy; never copy it into a recomp), `collection_window.hpp` (both: window mode kept, launcher told at a handover). `src/launcher/` the launcher `MarioPartyCollection.exe` (`tools\build_launcher.cmd`; the way to start the collection: black backdrop between games).
+- `src/` the collection's natives: `collection_platform.hpp` (what differs by system: data folder, own program, starting a game; Windows, Linux, macOS), `collection_mp1.cpp` (MP1), `collection_game.cpp` (MP2 and MP3 compile this one copy; never copy it into a recomp), `collection_window.hpp` (both: window mode kept, launcher told at a handover). `src/launcher/` the launcher `MarioPartyCollection.exe` (`tools\build_launcher.cmd`; the way to start the collection: black backdrop between games).
 - `tools/` `build_recomp.cmd`, `package_build.ps1`, `drive_game.ps1`, `ares_gdb.ps1` (memory through ares's GDB server, port 9123), `dump_mp1_messages.ps1`, `dump_mp2_messages.ps1`.
 - `docs/` `BUILDS.md` (history, what's tested, next), `ADDRESSES.md`, `HOOKS.md`, `TESTING.md`, `REFERENCES.md`, `handoff-design.md`, `milestones.txt`.
 - `recomp/mp1|mp2|mp3` the recomp repos (submodules initialised; the collection's changes on branch `collection`): `us.toml` (section "Mario Party N64 Collection"), `patches/collection.c`, natives at the end of `patches/syms.ld`, `CMakeLists.txt`. `build/decomp/*.elf` is the decomp's ELF (reference only).
@@ -25,6 +25,7 @@ Back up saves (`%LOCALAPPDATA%\MarioPartyRecompiled\`) before anything that writ
 
 ## Decisions
 
+- Linux: the collection code is portable (collection_platform.hpp); Linux packages are built only on request (about every other milestone), x86-64 through each recomp's tools/release.sh linux (Docker); ARM later.
 - Final design: one host program (window, RT64, audio, input) with MP1/MP2/MP3 as separate modules, each its own runtime and RDRAM. **Alpha:** switch programs (MP1 launches MP2/MP3 with `--boot` and exits; they relaunch MP1) through `%LOCALAPPDATA%\MarioPartyCollection\handoff.txt` (`docs\handoff-design.md`).
 - Totals flow one way: at Start on the last results page, MP2/MP3 send their human (non-CPU) players' star and coin sums; MP1 adds them at boot and saves only through its own save routine (EEPROM checksum). Limits: stars 0–9,999, coins 0–99,999, excess dropped. MP2/MP3 save normally. Quit Game → village, nothing added; debug Reset → MP1 title.
 - Settings: MP1's are the master copy (`%LOCALAPPDATA%\MarioPartyRecompiled\` general/graphics/sound/controls.json). MP2/MP3 copy them in at start and copy their own changes back (`src/collection_game.cpp`); saves, stored ROMs and mods stay per game.

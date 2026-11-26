@@ -1,6 +1,6 @@
 // Mario Party N64 Collection: the graphics cache. Pictures one Mario Party shows that another reuses (Mario Party 1's
 // minigame rules screen wears Mario Party 2's GAME RULES / NEXT / PRACTICE pills), pulled out of the player's own
-// stored ROMs and kept, unpacked, in %LOCALAPPDATA%\MarioPartyCollection\cache\. Nothing from it is ever committed or
+// stored ROMs and kept, unpacked, in MarioPartyCollection/cache in the data folder (%LOCALAPPDATA% on Windows, ~/.config on Linux). Nothing from it is ever committed or
 // shipped: it is made on the player's machine from the dumps they gave each recomp.
 //
 // build(): at start (Mario Party 1's static initializer). For each game whose files are listed, if its stored ROM is
@@ -15,6 +15,8 @@
 // ROMs are big-endian (.z64), as the recomps store them.
 
 #pragma once
+
+#include "collection_platform.hpp"
 
 #include <cstdint>
 #include <cstdio>
@@ -31,7 +33,7 @@ namespace collection_cache {
 
     struct Game {
         const char* key;          // file prefix and manifest key
-        const wchar_t* rom;       // the stored ROM, under %LOCALAPPDATA%
+        const char* program;      // the recomp storing the ROM: its data folder's name
         const char* name;         // the ROM header's name (0x20), as a check
         uint32_t mainfs;          // the main file system's offset in the USA ROM
         std::vector<uint32_t> files;
@@ -43,24 +45,30 @@ namespace collection_cache {
     // START / PRESS button (2 frames), shown above each player on MP1's rules screen until they press Start.
     inline std::vector<Game> games() {
         return {
-            { "mp2", L"MarioParty2Recompiled\\marioparty2.n64.us.1.0.z64", "MarioParty2", 0x41DD30,
+            { "mp2", "MarioParty2Recompiled", "MarioParty2", 0x41DD30,
               { 0xB0013, 0xB0014, 0xB0017, 0xB0018, 0xB001A, 0xB001D, 0xB0021, 0xB0022, 0xB0023, 0x900FB } },
         };
     }
 
+    // The data folder the recomps keep theirs in (collection_platform.hpp).
     inline fs::path local_app_data() {
-#ifdef _WIN32
-        const wchar_t* local = _wgetenv(L"LOCALAPPDATA");
-        if (local != nullptr) {
-            return fs::path(local);
-        }
-#endif
-        return {};
+        return collection_platform::data_root();
     }
 
     inline fs::path folder() {
-        fs::path local = local_app_data();
-        return local.empty() ? fs::path() : local / L"MarioPartyCollection" / L"cache";
+        fs::path root = collection_platform::collection_folder();
+        return root.empty() ? fs::path() : root / "cache";
+    }
+
+    // A recomp's stored ROM: RecompFrontend stores it as <program id lowercased>.n64.us.1.0.z64 in its data folder
+    // (marioparty2.n64.us.1.0.z64 for MarioParty2Recompiled).
+    inline fs::path stored_rom(const char* program) {
+        std::string name = program;
+        std::string id = name.substr(0, name.find("Recompiled"));
+        for (char& c : id) {
+            c = (char)tolower((unsigned char)c);
+        }
+        return local_app_data() / name / (id + ".n64.us.1.0.z64");
     }
 
     inline fs::path file_path(const char* game, uint32_t id) {
@@ -242,7 +250,7 @@ namespace collection_cache {
         std::map<std::string, std::string> manifest = read_manifest();
         bool changed = false;
         for (const Game& game : games()) {
-            fs::path rom_path = local / game.rom;
+            fs::path rom_path = stored_rom(game.program);
             if (!fs::exists(rom_path, ec)) {
                 continue;
             }

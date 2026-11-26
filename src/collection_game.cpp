@@ -12,13 +12,13 @@
 //     village (state=quit); kind 2: the debug menu's Reset, nothing added, to Mario Party 1's title (state=reset). Writes the handoff file, starts Mario Party 1 (its exe from the file's mp1=) with --boot and quits
 //     this game. 0 if it couldn't (not started by the collection, or Mario Party 1 didn't start): the game carries on.
 //
-// The handoff file: %LOCALAPPDATA%\MarioPartyCollection\handoff.txt, key=value lines (version, session, target, mode,
-// state, stars, coins, mp1). Windows only for now.
+// The handoff file: MarioPartyCollection/handoff.txt in the data folder (%LOCALAPPDATA% on Windows, ~/.config on Linux,
+// collection_platform.hpp), key=value lines (version, session, target, mode, state, stars, coins, mp1).
 //
 // Settings: Mario Party 1's are the collection's one copy. The settings menu's files (general.json, graphics.json,
 // sound.json, controls.json: the same options in all three recomps) live in each game's own folder
-// (%LOCALAPPDATA%\<exe name>\, RecompFrontend's app folder), read once at start and written when changed. Before this
-// game's main runs (a static object's constructor), Mario Party 1's (%LOCALAPPDATA%\MarioPartyRecompiled\) are copied
+// (<data folder>/<program name>, RecompFrontend's app folder), read once at start and written when changed. Before this
+// game's main runs (a static object's constructor), Mario Party 1's (<data folder>/MarioPartyRecompiled) are copied
 // over this game's, so it starts with them; then a thread copies any of this game's that changes back over Mario
 // Party 1's within a second, and the return to Mario Party 1 copies them once more before starting it. Saves, the
 // stored ROM and mods stay each game's own.
@@ -37,11 +37,8 @@
 #include "librecomp/helpers.hpp"
 #include "ultramodern/ultramodern.hpp"
 
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include "collection_platform.hpp"
 #include "collection_window.hpp"
-#endif
 
 namespace fs = std::filesystem;
 
@@ -49,28 +46,19 @@ namespace {
     using Fields = std::map<std::string, std::string>;
 
     fs::path handoff_path() {
-#ifdef _WIN32
-        const wchar_t* local = _wgetenv(L"LOCALAPPDATA");
-        if (local != nullptr) {
-            return fs::path(local) / L"MarioPartyCollection" / L"handoff.txt";
-        }
-#endif
-        return {};
+        fs::path folder = collection_platform::collection_folder();
+        return folder.empty() ? fs::path() : folder / "handoff.txt";
     }
 
     // "mp2" or "mp3", from this exe's name.
     std::string this_game() {
-#ifdef _WIN32
-        wchar_t buffer[MAX_PATH * 4];
-        DWORD length = GetModuleFileNameW(nullptr, buffer, (DWORD)(sizeof(buffer) / sizeof(buffer[0])));
-        std::wstring name = fs::path(std::wstring(buffer, length)).filename().wstring();
-        if (name.find(L"MarioParty2") == 0) {
+        std::string name = collection_platform::own_exe().filename().string();
+        if (name.find("MarioParty2") == 0) {
             return "mp2";
         }
-        if (name.find(L"MarioParty3") == 0) {
+        if (name.find("MarioParty3") == 0) {
             return "mp3";
         }
-#endif
         return {};
     }
 
@@ -134,31 +122,22 @@ namespace {
     const char* const shared_settings[] = { "general.json", "graphics.json", "sound.json", "controls.json" };
 
     fs::path local_app_data() {
-#ifdef _WIN32
-        const wchar_t* local = _wgetenv(L"LOCALAPPDATA");
-        if (local != nullptr) {
-            return fs::path(local);
-        }
-#endif
-        return {};
+        return collection_platform::data_root();
     }
 
     // This game's settings folder (RecompFrontend's app folder: the exe's name) and Mario Party 1's.
     fs::path own_settings_folder() {
-#ifdef _WIN32
-        wchar_t buffer[MAX_PATH * 4];
-        DWORD length = GetModuleFileNameW(nullptr, buffer, (DWORD)(sizeof(buffer) / sizeof(buffer[0])));
+        fs::path exe = collection_platform::own_exe();
         fs::path local = local_app_data();
-        if (length > 0 && !local.empty()) {
-            return local / fs::path(std::wstring(buffer, length)).stem();
+        if (!exe.empty() && !local.empty()) {
+            return local / exe.stem();
         }
-#endif
         return {};
     }
 
     fs::path master_settings_folder() {
         fs::path local = local_app_data();
-        return local.empty() ? fs::path() : local / L"MarioPartyRecompiled";
+        return local.empty() ? fs::path() : local / "MarioPartyRecompiled";
     }
 
     std::mutex settings_mutex;
@@ -225,23 +204,7 @@ namespace {
     };
     SharedSettings shared_settings_at_start;
 
-#ifdef _WIN32
-    bool start_exe(const fs::path& exe) {
-        std::wstring command = L"\"" + exe.wstring() + L"\" --boot";
-        std::wstring folder = exe.parent_path().wstring();
-        STARTUPINFOW startup{};
-        startup.cb = sizeof(startup);
-        PROCESS_INFORMATION process{};
-        if (!CreateProcessW(nullptr, command.data(), nullptr, nullptr, FALSE, 0, nullptr, folder.c_str(), &startup,
-                            &process)) {
-            fprintf(stderr, "collection: couldn't start %ls (error %lu)\n", exe.c_str(), GetLastError());
-            return false;
-        }
-        CloseHandle(process.hThread);
-        CloseHandle(process.hProcess);
-        return true;
-    }
-#endif
+    using collection_platform::start_exe;
 }
 
 extern "C" void recomp_collection_active(uint8_t* rdram, recomp_context* ctx) {
@@ -258,7 +221,6 @@ extern "C" void recomp_collection_return(uint8_t* rdram, recomp_context* ctx) {
     if (!active) {
         return;
     }
-#ifdef _WIN32
     std::string mp1_text = handoff["mp1"];
     fs::path mp1 = fs::path(std::u8string(mp1_text.begin(), mp1_text.end()));
     std::error_code ec;
@@ -286,5 +248,4 @@ extern "C" void recomp_collection_return(uint8_t* rdram, recomp_context* ctx) {
     active = false;
     ctx->r2 = 1;
     ultramodern::quit();
-#endif
 }

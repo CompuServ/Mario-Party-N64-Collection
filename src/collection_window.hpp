@@ -114,4 +114,10 @@ namespace collection_window {
         }
     }
 }
+#else
+// Elsewhere there is no launcher yet (its backdrop is a Windows window) and RT64 keeps the window mode in the settings
+// as it is: nothing to do before a handover.
+namespace collection_window {
+    inline void before_handover() {}
+}
 #endif

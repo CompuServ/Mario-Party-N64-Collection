@@ -13,10 +13,10 @@
 //   recomp_collection_return_applied(): once the totals are in this game's save; deletes the handoff file, so they're
 //     added once.
 //
-// The handoff file is %LOCALAPPDATA%\MarioPartyCollection\handoff.txt, key=value lines (version, session, target,
-// state, stars, coins, mp1: this exe, for the other game to start again). Where the other games' exes are comes from
-// collection.ini beside this exe (mp2=<path>, mp3=<path>), which the collection's packaging writes. Windows only for
-// now; elsewhere launch returns 0 and no return is ever found.
+// The handoff file is MarioPartyCollection/handoff.txt in the data folder (%LOCALAPPDATA% on Windows, ~/.config on
+// Linux: collection_platform.hpp), key=value lines (version, session, target, state, stars, coins, mp1: this program,
+// for the other game to start again). Where the other games' programs are comes from collection.ini beside this one
+// (mp2=<path>, mp3=<path>), which the collection's packaging writes.
 
 #include <cstdio>
 #include <cstdlib>
@@ -30,42 +30,21 @@
 #include "librecomp/helpers.hpp"
 #include "ultramodern/ultramodern.hpp"
 
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include "collection_platform.hpp"
 #include "collection_window.hpp"
-#endif
 #include "collection_cache.hpp"
 
 namespace fs = std::filesystem;
 
 namespace {
     using Fields = std::map<std::string, std::string>;
-
-    fs::path collection_folder() {
-#ifdef _WIN32
-        const wchar_t* local = _wgetenv(L"LOCALAPPDATA");
-        if (local != nullptr) {
-            return fs::path(local) / L"MarioPartyCollection";
-        }
-#endif
-        return {};
-    }
+    using collection_platform::collection_folder;
+    using collection_platform::own_exe;
+    using collection_platform::start_exe;
 
     fs::path handoff_path() {
         fs::path folder = collection_folder();
         return folder.empty() ? fs::path() : folder / "handoff.txt";
-    }
-
-    fs::path own_exe() {
-#ifdef _WIN32
-        wchar_t buffer[MAX_PATH * 4];
-        DWORD length = GetModuleFileNameW(nullptr, buffer, (DWORD)(sizeof(buffer) / sizeof(buffer[0])));
-        if (length > 0) {
-            return fs::path(std::wstring(buffer, length));
-        }
-#endif
-        return {};
     }
 
     // key=value lines; anything else is skipped.
@@ -119,31 +98,11 @@ namespace {
         snprintf(text, sizeof(text), "%08x%08x", device(), device());
         return text;
     }
-
-#ifdef _WIN32
-    // The exe with --boot, from its own folder (where its assets are).
-    bool start_exe(const fs::path& exe) {
-        std::wstring command = L"\"" + exe.wstring() + L"\" --boot";
-        std::wstring folder = exe.parent_path().wstring();
-        STARTUPINFOW startup{};
-        startup.cb = sizeof(startup);
-        PROCESS_INFORMATION process{};
-        if (!CreateProcessW(nullptr, command.data(), nullptr, nullptr, FALSE, 0, nullptr, folder.c_str(), &startup,
-                            &process)) {
-            fprintf(stderr, "collection: couldn't start %ls (error %lu)\n", exe.c_str(), GetLastError());
-            return false;
-        }
-        CloseHandle(process.hThread);
-        CloseHandle(process.hProcess);
-        return true;
-    }
-#endif
 }
 
 extern "C" void recomp_collection_launch(uint8_t* rdram, recomp_context* ctx) {
     int32_t game = (int32_t)ctx->r4;
     ctx->r2 = 0;
-#ifdef _WIN32
     fs::path exe_path = own_exe();
     fs::path handoff = handoff_path();
     if (exe_path.empty() || handoff.empty() || (game != 2 && game != 3)) {
@@ -155,12 +114,10 @@ extern "C" void recomp_collection_launch(uint8_t* rdram, recomp_context* ctx) {
         fprintf(stderr, "collection: no %s= in collection.ini\n", key.c_str());
         return;
     }
-    fs::path target = fs::path(std::u8string(ini[key].begin(), ini[key].end()));
-    // A relative path is from this exe's folder, so a build folder can be moved or renamed.
-    if (target.is_relative()) {
-        target = exe_path.parent_path() / target;
-    }
-    if (!fs::exists(target)) {
+    // A relative path is from this program's folder, so a build folder can be moved or renamed.
+    fs::path target = collection_platform::find_exe(exe_path.parent_path(), ini[key]);
+    std::error_code exists_ec;
+    if (!fs::exists(target, exists_ec)) {
         fprintf(stderr, "collection: %s not found\n", ini[key].c_str());
         return;
     }
@@ -177,10 +134,10 @@ extern "C" void recomp_collection_launch(uint8_t* rdram, recomp_context* ctx) {
     std::u8string exe_utf8 = exe_path.u8string();
     fields["mp1"] = std::string(exe_utf8.begin(), exe_utf8.end());
     if (!write_fields(handoff, fields)) {
-        fprintf(stderr, "collection: couldn't write %ls\n", handoff.c_str());
+        fprintf(stderr, "collection: couldn't write %s\n", handoff.string().c_str());
         return;
     }
-    // The window mode kept for the next game, and the launcher's black backdrop up (collection_window.hpp).
+    // The window mode kept for the next game, and the launcher's black backdrop up (collection_window.hpp; Windows).
     collection_window::before_handover();
     if (!start_exe(target)) {
         std::error_code ec;
@@ -189,7 +146,6 @@ extern "C" void recomp_collection_launch(uint8_t* rdram, recomp_context* ctx) {
     }
     ctx->r2 = 1;
     ultramodern::quit();
-#endif
 }
 
 extern "C" void recomp_collection_take_return(uint8_t* rdram, recomp_context* ctx) {
