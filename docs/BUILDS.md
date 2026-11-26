@@ -41,6 +41,8 @@ build-011 on, `collection.ini` holds paths relative to MP1's folder.
 
 | 021 | Crane Game back to its own prizes (a third of a grabbed player's coins, 10 for the chest, 5 for the bag, 1 for a coin); the grabbed player still loses none, as with every minigame (Bash 'n' Cash, Grab Bag included). Bowser's events, Chance Time and Boo still take coins: the Bowser Space's minigames return to its overlay (0x46), not through the results. | not run: build-020's tested code with the Crane Game branch removed |
 
+| 022 | Message speed Fast for each new party (the pause menu still changes it; a resumed party keeps its own): MP1 GwSystem+0x24 = 2 at func_800FF0A0_AdventureModeSetup's end (0x800FF320); MP2 GwSystem+0x26 = 0 at 0x8006358C (func_80063308_63F08's new-party path); MP3 GwSystem+0x14 = 0 at 0x800F8F74 (MBSaveInit) and Duel's 0x800FC71C (func_800FC5D8_name_81). MP1 coin battles (Crane Game 0x23, Bash 'n' Cash 0x10, Grab Bag 0x1C): at most 30 coins a player. MP1: a computer's one-player minigame on a board goes from its rules screen straight to the coin results (launch hook): 10 coins at 50% / 75% / 90% for Easy / Normal / Hard (cpu_difficulty_copy, rand8), else none. | by script: Pedal Power forced for computer Luigi (temporary hook, since removed): rules screen → results, Luigi +10, back to the board. Message speed not checked in the menus of any game; MP2/MP3 not run; the 30-coin cap not run |
+
 ★ milestone.
 
 ## Not yet verified

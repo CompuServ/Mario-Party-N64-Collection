@@ -43,11 +43,12 @@ text = "ctx->r5 = 0;"
 | func_800F7C58_MinigameInstructions | 0x800F808C | practice: R arms/disarms (C buttons masked while armed) |
 | func_800F7C58_MinigameInstructions | 0x800F82FC | practice: page shown taken as -1 → text redrawn |
 | func_800F7C58_MinigameInstructions | 0x800F8314 | practice: armed → practice text, goto L_800F8440 (wait) |
-| func_800F6990_MinigameInstructions | 0x800F6990 | practice: frees windows, omOvlCallEx(minigame, 0, 0x14) itself, return (every mode) |
+| func_800F6990_MinigameInstructions | 0x800F6990 | a computer's 1-player board minigame skipped to the results (10 coins by skill); practice: frees windows, omOvlCallEx(minigame, 0, 0x14) itself, return (every mode) |
 | func_800F7C58_MinigameInstructions | 0x800F8044 | practice labels come in as the text window opens |
 | omInitObjMan | 0x8005D174 | practice minigame: blinking PRACTICE R process |
 | omOvlGotoEx | 0x8005E054 | practice minigame leaving: func_80070ED4 frees its window system; going to results 0x7C/0x7B: minigame losses zeroed |
 | func_800FA3A4_ResultsScene / _ResultsEternalStar2 | 0x800FA584 | bank stars kept to 9,999 instead of 100 |
+| func_800FF0A0_AdventureModeSetup | 0x800FF320 | new party: message speed Fast (GwSystem+0x24 = 2) |
 | DataRead | 0x800145B0 | ID with a game in the top byte (2 = MP2) served from the graphics cache |
 | omOvlReturnEx | 0x8005DFB8 | skipped once a practice was quit with R (no second return) |
 
@@ -63,6 +64,8 @@ text = "ctx->r5 = 0;"
 | func_80066994_67594 | 0x80066ADC | R suppressed |
 | func_8005DA20_5E620 | 0x8005DB1C | pause's menu process → `collection_debug_process` |
 | func_8005DA20_5E620 | 0x8005DB90 | pause's quit branch: End Party / Reset / Quit Game |
+
+| func_80063308_63F08 | 0x8006358C | new party: message speed Fast (GwSystem+0x26 = 0) |
 
 ## Mario Party 3
 
@@ -80,6 +83,9 @@ The survey's hooks come first in `us.toml`; the collection's title redirect is c
 | func_80105DB4_msetup | 0x80105E08 | B on the Star Lift → back to MP1 |
 | func_8010B82C_msetup | 0x8010B82C | Tumble's message helper: skip 0x1500 / 0x1502 in collection mode (`collection_lift_message`) |
 | func_8010B858_msetup | 0x8010B858 | Tumble's wait helper: returns 0 after a skipped message (`collection_lift_wait`) |
+
+| MBSaveInit_0010C9A4 | 0x800F8F74 | new party: message speed Fast (GwSystem+0x14 = 0) |
+| func_800FC5D8_name_81 | 0x800FC71C | Duel new party: message speed Fast |
 
 ## Natives (end of patches/syms.ld)
 
