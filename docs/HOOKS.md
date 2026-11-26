@@ -48,6 +48,8 @@ text = "ctx->r5 = 0;"
 | omInitObjMan | 0x8005D174 | practice minigame: blinking PRACTICE R process |
 | omOvlGotoEx | 0x8005E054 | practice minigame leaving: func_80070ED4 frees its window system |
 | func_800FA3A4_ResultsScene / _ResultsEternalStar2 | 0x800FA584 | bank stars kept to 9,999 instead of 100 |
+| DataRead | 0x800145B0 | ID with a game in the top byte (2 = MP2) served from the graphics cache |
+| omOvlReturnEx | 0x8005DFB8 | skipped once a practice was quit with R (no second return) |
 
 ## Mario Party 2
 
@@ -83,6 +85,6 @@ The survey's hooks come first in `us.toml`; the collection's title redirect is c
 
 | Game | Addresses | Natives |
 |---|---|---|
-| MP1 | 0x8F00003C–0x8F000044 | recomp_collection_launch, recomp_collection_take_return, recomp_collection_return_applied |
+| MP1 | 0x8F00003C–0x8F00004C | recomp_collection_launch, recomp_collection_take_return, recomp_collection_return_applied, recomp_collection_cache_size, recomp_collection_cache_read |
 | MP2 | 0x8F000040, 0x8F000044 | recomp_collection_active, recomp_collection_return |
 | MP3 | 0x8F00002C, 0x8F000030 | recomp_collection_active, recomp_collection_return |

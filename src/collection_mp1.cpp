@@ -35,6 +35,7 @@
 #include <windows.h>
 #include "collection_window.hpp"
 #endif
+#include "collection_cache.hpp"
 
 namespace fs = std::filesystem;
 
@@ -229,4 +230,37 @@ extern "C" void recomp_collection_return_applied(uint8_t* rdram, recomp_context*
     if (!handoff.empty()) {
         fs::remove(handoff, ec);
     }
+}
+
+// ---- The graphics cache (collection_cache.hpp) ----------------------------------------------------------------------
+// Made or refreshed as Mario Party 1 starts, before its game does.
+namespace {
+    struct CacheAtStart {
+        CacheAtStart() { collection_cache::build(); }
+    } cache_at_start;
+
+    // A cached file asked for by the patches as a file ID of their own: the game's number in the top byte (2 Mario Party
+    // 2), the file's own ID (directory << 16 | file) below it. patches/collection.c's hook at DataRead serves these.
+    std::vector<uint8_t> cached_file(uint32_t id) {
+        uint32_t game = id >> 24;
+        if (game == 2) {
+            return collection_cache::load("mp2", id & 0xFFFFFF);
+        }
+        return {};
+    }
+}
+
+// recomp_collection_cache_size(id): the cached file's size, 0 if it isn't cached.
+extern "C" void recomp_collection_cache_size(uint8_t* rdram, recomp_context* ctx) {
+    ctx->r2 = (gpr)(int32_t)cached_file((uint32_t)ctx->r4).size();
+}
+
+// recomp_collection_cache_read(id, dest): the cached file's bytes written to dest in RDRAM; 1 when it was there.
+extern "C" void recomp_collection_cache_read(uint8_t* rdram, recomp_context* ctx) {
+    std::vector<uint8_t> data = cached_file((uint32_t)ctx->r4);
+    gpr dest = ctx->r5;
+    for (size_t i = 0; i < data.size(); i++) {
+        MEM_B((int32_t)i, dest) = data[i];
+    }
+    ctx->r2 = data.empty() ? 0 : 1;
 }
