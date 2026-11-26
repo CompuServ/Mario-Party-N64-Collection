@@ -24,13 +24,23 @@ there before using a name in `us.toml`). Hooks are listed in `docs\HOOKS.md`.
 | 0x8006FCC0 | func | wait on a window |
 | 0x8005B244 | func | save (EEPROM, with checksum): the only way MP1's save is written |
 | 0x800F6884 | | 100-star event (one-time; open question whether to keep it) |
+| 0x800F5460 | u16[4] | buttons pressed this frame |
+| 0x800ED5C0 | struct | `GwSystem` (0x26; +0x1E the minigame on the rules screen) |
+| 0x800F37F8 / 0x800C597E | | overlay history (8 bytes an entry) / its top |
+| 0x800F09F4 | s32 | overlay omOvlGotoEx last went to |
+| 0x800C5DF1 | u8 | window system set up (func_8006CEA0 sets, func_80070ED4 frees) |
+| 0x8010F4EA | s16 | rules screen (0x6F): page (0 hints, 1 rules, 2-4 controls) |
+| 0x8010F760 / 0x8010F772 | s16 | rules screen: minigame kind (0 one-player) / its player |
+| 0x8010F764 | s16 | rules screen: 0 once Start is pressed |
+| func_8006D010 | func | plain window (x, y, w, h, 0, 0): remove with func_80070D90, never func_80071E80/C8C (tail sprites) |
 
+Overlays: 0x6F minigame rules (board path: omOvlCallEx(minigame) then HisChg(1, 0x7C) = coin results), 0x7B/0x7C/0x7D results (Stadium/board/Island). Minigames don't set up the window system.
 Overlays: 0x61 opening, 0x69 Mushroom Village (`GameModeOverworld`), 0x6A Adventure setup, 0x81 title. Setup state
 0xA = number of players, 0x26 = back to the village. Messages: 0x96 Toad's greeting, 0x97 "Choose the place…",
 0x99 Warp Pipe two-option choice, 0x284 setup's first message, 0x26C Mini-Game Stadium's.
 
 Text codes (MP1): 0x0B start, 0x0C…0x0D a choice, 0x0A newline, 0x10 space, 0xFF wait for A, 0x85 period,
-0xC3 question mark. `tools\dump_mp1_messages.ps1 -Ids 0x99,0x284` prints messages from the ROM.
+0xC3 question mark. Buttons (PartyPlanner64's MP1 map): 0x21 A, 0x22 B, 0x23 C-up, 0x24 C-right, 0x25 C-left, 0x26 C-down, 0x27 Z, 0x28 stick, 0x2B Start, 0x2C R; colours 0x02 default, 0x03 red, 0x05 green, 0x06 blue; 0x3D hyphen. `tools\dump_mp1_messages.ps1 -Ids 0x99,0x284` prints messages from the ROM.
 
 ## Mario Party 2 (recomp\mp2)
 

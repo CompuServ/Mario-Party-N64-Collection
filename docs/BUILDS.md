@@ -29,10 +29,13 @@ build-011 on, `collection.ini` holds paths relative to MP1's folder.
 
 | 015 | Debug menu L+R hold counted on every pause-watcher frame (MP1 0x80058394, MP2 0x800669CC, MP3 0x800FF190: before the pause-allowed checks), so a hold on a player's "MARIO START" banner counts; a completed hold stays armed through the release and the menu opens as soon as the dice block is up (the banner can't pause in any of the three). | by script in MP2 (hold on banner, release, A → menu at once); MP1/MP3 same code, not run |
 
+| 016 | MP1 Practice (`patches/collection.c` "Practice"): the minigame rules screen (0x6F) shows GAME RULES / NEXT (C-right) / PRACTICE (R) in the game's windows in place of its header pictures; R from a human player arms it (PRACTICE / QUIT R, practice text), R again disarms; Start plays the minigame, which returns to the rules screen (the board path's HisChg to the coin results 0x7C skipped) with GwPlayer and GwSystem put back as at launch; a blinking PRACTICE R window while it plays (the window system set up in the minigame, freed as it leaves). Board path only (flags 0x2B/0x2C/0x30/0x45/0x29 clear), and only when a human plays it. | by script: Platform Peril practice → rules, real game → results from the pre-practice coins; Bobsled Run practice twice (label blinking) → real game → results |
+
 ★ milestone.
 
 ## Not yet verified
 
+- build-016 practice: the blinking label (sets up the window system inside the minigame) tried in Platform Peril and Bobsled Run only; a one-player minigame a computer plays shows no PRACTICE (not seen yet); Mini-Game House, Island and Stadium rules unchanged (not run). The hints and controls pages are labelled HINTS and CONTROLS (the original header pictures' names weren't checked).
 - build-015's banner hold in MP1 and MP3 (same logic as MP2, which passed).
 
 - Settings changed through the in-game menu in MP2/MP3 reaching MP1 (tested by editing the files, not through the menu).

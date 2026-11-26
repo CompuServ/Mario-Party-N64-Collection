@@ -37,6 +37,15 @@ text = "ctx->r5 = 0;"
 | func_8005835C | 0x8005844C | R suppressed while the menu is held |
 | func_800F67B0_MushroomBank | 0x800F6874 | bank stars ";%5d" |
 | func_8005A4C0 | 0x8005A73C | Item List stars "%4d" |
+| func_8005835C | 0x80058394 | debug menu L+R count, every watcher frame (banner too) |
+| func_800F6610_MinigameInstructions | 0x800F6610 | practice: restore players/system after a practice, disarm, allowed? |
+| func_800F7C58_MinigameInstructions | 0x800F7FD0 | header process (0x800F84B0) → practice labels |
+| func_800F7C58_MinigameInstructions | 0x800F808C | practice: R arms/disarms (C buttons masked while armed) |
+| func_800F7C58_MinigameInstructions | 0x800F82FC | practice: page shown taken as -1 → text redrawn |
+| func_800F7C58_MinigameInstructions | 0x800F8314 | practice: armed → practice text, goto L_800F8440 (wait) |
+| func_800F6990_MinigameInstructions | 0x800F6AC0 | practice: after omOvlCallEx, skip HisChg(0x7C), goto L_800F6B08 |
+| omInitObjMan | 0x8005D174 | practice minigame: blinking PRACTICE R process |
+| omOvlGotoEx | 0x8005E054 | practice minigame leaving: func_80070ED4 frees its window system |
 
 ## Mario Party 2
 
