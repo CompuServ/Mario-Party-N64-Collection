@@ -46,7 +46,7 @@ text = "ctx->r5 = 0;"
 | func_800F6990_MinigameInstructions | 0x800F6990 | practice: frees windows, omOvlCallEx(minigame, 0, 0x14) itself, return (every mode) |
 | func_800F7C58_MinigameInstructions | 0x800F8044 | practice labels come in as the text window opens |
 | omInitObjMan | 0x8005D174 | practice minigame: blinking PRACTICE R process |
-| omOvlGotoEx | 0x8005E054 | practice minigame leaving: func_80070ED4 frees its window system; going to results 0x7C/0x7B: minigame losses zeroed, Crane Game +20 |
+| omOvlGotoEx | 0x8005E054 | practice minigame leaving: func_80070ED4 frees its window system; going to results 0x7C/0x7B: minigame losses zeroed |
 | func_800FA3A4_ResultsScene / _ResultsEternalStar2 | 0x800FA584 | bank stars kept to 9,999 instead of 100 |
 | DataRead | 0x800145B0 | ID with a game in the top byte (2 = MP2) served from the graphics cache |
 | omOvlReturnEx | 0x8005DFB8 | skipped once a practice was quit with R (no second return) |

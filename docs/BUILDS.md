@@ -39,6 +39,8 @@ build-011 on, `collection.ini` holds paths relative to MP1's folder.
 
 | 020 ★ | MP1: no coins lost in minigames. A minigame leaves each player's win or loss in GwPlayer's coins_mg (+0x0A), applied by the results (board 0x7C, Stadium 0x7B); no minigame changes coins itself. As omOvlGotoEx goes to either (hook 0x8005E054, `collection_overlay_going`), losses become 0: every kind (1P, 1 vs 3, 2 vs 2, 4P) only gives. Crane Game (0x23): the crane's player wins 20, nobody loses. Bowser's events (Bowser Space, Chance Time) unchanged. | by script (Crane Game forced with a temporary hook, since removed): computer crane grabbed a bag, 13 → 33, everyone else unchanged |
 
+| 021 | Crane Game back to its own prizes (a third of a grabbed player's coins, 10 for the chest, 5 for the bag, 1 for a coin); the grabbed player still loses none, as with every minigame (Bash 'n' Cash, Grab Bag included). Bowser's events, Chance Time and Boo still take coins: the Bowser Space's minigames return to its overlay (0x46), not through the results. | not run: build-020's tested code with the Crane Game branch removed |
+
 ★ milestone.
 
 ## Not yet verified
