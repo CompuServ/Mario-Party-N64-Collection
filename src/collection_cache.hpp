@@ -39,11 +39,12 @@ namespace collection_cache {
 
     // The files reused, by game. Mario Party 2's minigame rules screen (overlay 0x5F): 0xB0013 the empty pill, 0xB0014
     // GAME RULES, 0xB0017 ADVICE, 0xB0018 CONTROLS, 0xB001A PRACTICE (text laid on the pill), 0xB0021 NEXT, 0xB0022
-    // PRACTICE R, 0xB0023 QUIT R (whole pills); and 0x900FB, the QUIT PRACTICE R banner its minigames show while practicing.
+    // PRACTICE R, 0xB0023 QUIT R (whole pills); and 0x900FB, the QUIT PRACTICE R banner its minigames show while practicing. 0xB001D: the
+    // START / PRESS button (2 frames), shown above each player on MP1's rules screen until they press Start.
     inline std::vector<Game> games() {
         return {
             { "mp2", L"MarioParty2Recompiled\\marioparty2.n64.us.1.0.z64", "MarioParty2", 0x41DD30,
-              { 0xB0013, 0xB0014, 0xB0017, 0xB0018, 0xB001A, 0xB0021, 0xB0022, 0xB0023, 0x900FB } },
+              { 0xB0013, 0xB0014, 0xB0017, 0xB0018, 0xB001A, 0xB001D, 0xB0021, 0xB0022, 0xB0023, 0x900FB } },
         };
     }
 
@@ -177,6 +178,34 @@ namespace collection_cache {
         return out;
     }
 
+    // A darkened copy, kept beside a few files under an ID of its own (the file's with 0x8000 added): MP1's sprites have
+    // no darkening tint, so a "pressed" look is a picture of its own. Mario Party 2's START / PRESS button (0xB001D)
+    // dimmed for a player who has pressed Start on MP1's rules screen.
+    inline uint32_t dimmed_id(uint32_t id) {
+        return id == 0xB001D ? 0xB801D : 0;
+    }
+
+    // An ImgPack picture with its palette (u32 at +0x0C its offset, the u8 at +0x1A its count, 0 for 256; RGBA5551
+    // colours) darkened to a dark blue-gray: red and green to 45%, blue to 60%.
+    inline std::vector<uint8_t> dimmed(std::vector<uint8_t> data) {
+        size_t palette = be32(data, 0x0C);
+        size_t count = data.size() > 0x1A ? data[0x1A] : 0;
+        if (count == 0) {
+            count = 256;
+        }
+        for (size_t i = 0; i < count && palette + 2 * i + 1 < data.size(); i++) {
+            size_t at = palette + 2 * i;
+            uint16_t c = (uint16_t)((data[at] << 8) | data[at + 1]);
+            uint16_t r = (uint16_t)(((c >> 11) & 31) * 45 / 100);
+            uint16_t g = (uint16_t)(((c >> 6) & 31) * 45 / 100);
+            uint16_t b = (uint16_t)(((c >> 1) & 31) * 60 / 100);
+            c = (uint16_t)((r << 11) | (g << 6) | (b << 1) | (c & 1));
+            data[at] = (uint8_t)(c >> 8);
+            data[at + 1] = (uint8_t)c;
+        }
+        return data;
+    }
+
     inline std::map<std::string, std::string> read_manifest() {
         std::map<std::string, std::string> fields;
         std::ifstream file(folder() / "manifest.txt");
@@ -235,7 +264,8 @@ namespace collection_cache {
                      be32(header, 0x10), be32(header, 0x14));
             bool whole = manifest[game.key] == stamp;
             for (uint32_t id : game.files) {
-                if (!fs::exists(file_path(game.key, id), ec)) {
+                if (!fs::exists(file_path(game.key, id), ec) ||
+                    (dimmed_id(id) != 0 && !fs::exists(file_path(game.key, dimmed_id(id)), ec))) {
                     whole = false;
                 }
             }
@@ -252,6 +282,11 @@ namespace collection_cache {
                 }
                 std::ofstream out(file_path(game.key, id), std::ios::binary | std::ios::trunc);
                 out.write((const char*)data.data(), data.size());
+                if (dimmed_id(id) != 0) {
+                    std::vector<uint8_t> dim = dimmed(data);
+                    std::ofstream dim_out(file_path(game.key, dimmed_id(id)), std::ios::binary | std::ios::trunc);
+                    dim_out.write((const char*)dim.data(), dim.size());
+                }
             }
             manifest[game.key] = stamp;
             changed = true;

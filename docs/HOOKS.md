@@ -40,7 +40,7 @@ text = "ctx->r5 = 0;"
 | func_8005835C | 0x80058394 | debug menu L+R count, every watcher frame (banner too) |
 | func_800F6610_MinigameInstructions | 0x800F6610 | practice: restore players/system after a practice, disarm, allowed? |
 | func_800F7C58_MinigameInstructions | 0x800F7FD0 | header process (0x800F84B0) → practice labels |
-| func_800F7C58_MinigameInstructions | 0x800F808C | practice: R arms/disarms (C buttons masked while armed) |
+| func_800F7C58_MinigameInstructions | 0x800F808C | practice: R arms/disarms (C buttons masked while armed); ready up: Start held back until everyone is ready |
 | func_800F7C58_MinigameInstructions | 0x800F82FC | practice: page shown taken as -1 → text redrawn |
 | func_800F7C58_MinigameInstructions | 0x800F8314 | practice: armed → practice text, goto L_800F8440 (wait) |
 | func_800F6990_MinigameInstructions | 0x800F6990 | a computer's 1-player board minigame skipped to the results (10 coins by skill); practice: frees windows, omOvlCallEx(minigame, 0, 0x14) itself, return (every mode) |
@@ -51,6 +51,8 @@ text = "ctx->r5 = 0;"
 | func_800FF0A0_AdventureModeSetup | 0x800FF320 | new party: message speed Fast (GwSystem+0x24 = 2) |
 | func_800F7008_MushroomShop | 0x800F7038 | lock function skipped: every item not yet bought for sale |
 | func_8005A4C0 / func_8005AA88 | 0x8005A99C / 0x8005AB4C, 0x8005ABA0, 0x8005AC20 | village Start pages: Records page made, 960-wide cycle, moved, removed |
+| LoadFormFile | 0x80017528, 0x80017554 | rules screen: characters' models noted for the ready-up buttons |
+| func_800F8ED4_MinigameInstructions | 0x800F8F18 | the game's START sign hidden |
 | 0x7B column moves (func_800F6DCC, F72B0, F75C0 x2, F7914, F7CCC) | 0x800F6ECC, 0x800F7598, 0x800F7798, 0x800F78C8, 0x800F7A20, 0x800F7D74 | Stadium coin towers: empty column hidden, a low column kept above the floor and scaled (0x800F6EF8 keeps the scale) |
 | DataRead | 0x800145B0 | ID with a game in the top byte (2 = MP2) served from the graphics cache |
 | omOvlReturnEx | 0x8005DFB8 | skipped once a practice was quit with R (no second return) |
