@@ -32,6 +32,8 @@ there before using a name in `us.toml`). Hooks are listed in `docs\HOOKS.md`.
 | 0x8010F4EA | s16 | rules screen (0x6F): page (0 hints, 1 rules, 2-4 controls) |
 | 0x8010F760 / 0x8010F772 | s16 | rules screen: minigame kind (0 one-player) / its player |
 | 0x8010F764 | s16 | rules screen: 0 once Start is pressed |
+| 0x8010F400 | s16 | rules screen: 1 on its timeout (preview zooms in, minigame starts by itself) |
+| 0x8010F766 / 0x8010E4F0 | | rules screen: minigame shown / table (20 bytes each, overlay first) |
 | func_8006D010 | func | plain window (x, y, w, h, 0, 0): remove with func_80070D90, never func_80071E80/C8C (tail sprites) |
 
 Overlays: 0x6F minigame rules (board path: omOvlCallEx(minigame) then HisChg(1, 0x7C) = coin results), 0x7B/0x7C/0x7D results (Stadium/board/Island). Minigames don't set up the window system.

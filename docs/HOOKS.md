@@ -43,7 +43,8 @@ text = "ctx->r5 = 0;"
 | func_800F7C58_MinigameInstructions | 0x800F808C | practice: R arms/disarms (C buttons masked while armed) |
 | func_800F7C58_MinigameInstructions | 0x800F82FC | practice: page shown taken as -1 → text redrawn |
 | func_800F7C58_MinigameInstructions | 0x800F8314 | practice: armed → practice text, goto L_800F8440 (wait) |
-| func_800F6990_MinigameInstructions | 0x800F6AC0 | practice: after omOvlCallEx, skip HisChg(0x7C), goto L_800F6B08 |
+| func_800F6990_MinigameInstructions | 0x800F6990 | practice: frees windows, omOvlCallEx(minigame, 0, 0x14) itself, return (every mode) |
+| func_800F7C58_MinigameInstructions | 0x800F8044 | practice labels come in as the text window opens |
 | omInitObjMan | 0x8005D174 | practice minigame: blinking PRACTICE R process |
 | omOvlGotoEx | 0x8005E054 | practice minigame leaving: func_80070ED4 frees its window system |
 
