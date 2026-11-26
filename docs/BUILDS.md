@@ -33,6 +33,8 @@ build-011 on, `collection.ini` holds paths relative to MP1's folder.
 
 | 017 | MP1 Practice in every mode: us.toml's hook at func_800F6990_MinigameInstructions's start calls the minigame itself (omOvlCallEx, no results overlay, no omOvlGotoEx) and returns, so the Mini-Game House, Stadium and Island rules screens get it too (not a computer's one-player game). Labels come in as Toad's box opens (hook 0x800F8044) and stop on the rules screen's own timeout (0x8010F400: the preview zooms in and the minigame starts by itself). Page 0 named ADVICE (MP1's header art: Advice / Game Rules / Controls). | by script on the board: a computer's 1-player game shows no PRACTICE, labels with the box; Skateboard Scamper practice → rules. The timeout guard and the ADVICE rename were built but not run; House, Stadium and Island not run |
 
+| 018 | MP1 bank stars to 9,999: the end-of-game results (overlays 0x40 and 0x64, func_800FA3A4 at 0x800FA584) add the players' stars to GwCommon one at a time but kept them to 100; now kept to 9,999 (the Item List and Mushroom Bank already show 4 digits). Debug menu: Max Stars P1 in black (Boo's colour for a choice the player can't take, 0x01) and refused with the cancel sound in Mini-Game Island and Stadium (flags 0x2B, 0x2C, 0x30). Blinking PRACTICE R with no window background. | by script: Max Stars + End Party with the bank at 100 → deposit counted past 100, Item List 199 (save restored after); PRACTICE R blinking without background in Coin Block Bash. Max Stars grayed in Island/Stadium not run; the menu's white (0x08) after the colour fix not seen |
+
 ★ milestone.
 
 ## Not yet verified

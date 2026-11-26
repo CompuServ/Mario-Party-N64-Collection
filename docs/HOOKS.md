@@ -47,6 +47,7 @@ text = "ctx->r5 = 0;"
 | func_800F7C58_MinigameInstructions | 0x800F8044 | practice labels come in as the text window opens |
 | omInitObjMan | 0x8005D174 | practice minigame: blinking PRACTICE R process |
 | omOvlGotoEx | 0x8005E054 | practice minigame leaving: func_80070ED4 frees its window system |
+| func_800FA3A4_ResultsScene / _ResultsEternalStar2 | 0x800FA584 | bank stars kept to 9,999 instead of 100 |
 
 ## Mario Party 2
 
