@@ -55,11 +55,24 @@ build-011 on, `collection.ini` holds paths relative to MP1's folder.
 
 ## Not yet verified
 
-- Practice (build-017) in the Mini-Game House, Stadium and Island (not run by script). The blinking label sets up the window system inside the minigame: tried in Platform Peril, Bobsled Run and Skateboard Scamper only.
-- build-015's banner hold in MP1 and MP3 (same logic as MP2, which passed).
+- build-025's ready up with several human controllers (scripts drive one keyboard).
+- build-026: the MP2/MP3 → MP1 return through the new shared launch code (MP1 → MP2 checked); any Linux package (none built yet).
 
-- Settings changed through the in-game menu in MP2/MP3 reaching MP1 (tested by editing the files, not through the menu).
+Confirmed by hand (2026-11-27, build-025/026): practice on Mini-Game Island; settings changed in MP2/MP3's menus reach
+MP1's; the debug menus of all three games open when intended on the player's turn (banner hold included); end-of-party
+results add stars and coins to MP1 correctly (MP2's totals after the latch fix included); every game's Quit returns as
+designed; the debug items hit controller 1's player.
 
-- MP2 returning real totals after the latch fix (0x80107714).
-- MP3's Quit Game return since its hook became `collection_pause_quit` (build-012).
-- Whether MP1's and MP2's "P1" debug items hit controller 1's player: MP3 sorts its players into turn order, so slot 0 was whoever went first; MP1 and MP2 use slot 0 too.
+## Next (build-027, when the user starts it)
+
+1. MP2's warp pipe after a board is picked ("Leave the Warp Pipe? Yes No"): Yes goes back to MP1's Mushroom Village
+   (the handoff's quit, as Quit Game does), not MP2's own warp pipe room.
+2. MP2's board select (Toad, "Horror Land / Difficulty…"): B asks "Go back to the Mushroom Village?" Yes (default) No,
+   in the same window, font and choice layout as its "Hear about the rules of the game?" question; Yes returns to MP1's
+   village, so a player can change their game pick.
+3. MP3's Star Lift: Tumble's B question "Go back to the Castle Grounds?" reads "Go back to the Mushroom Village?",
+   "Mushroom Village" in the same green; Yes already returns to MP1 (check it goes to the village).
+4. Black backdrop between games in fullscreen not seen by the user on the latest builds: check it is started through
+   `MarioPartyCollection.exe` (the backdrop only exists then; the games alone show the desktop between them); if it
+   was, find why build-026's handover no longer reaches the launcher (collection_window.hpp is now always included,
+   its Windows half unchanged).
