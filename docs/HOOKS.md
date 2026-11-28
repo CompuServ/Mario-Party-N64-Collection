@@ -60,6 +60,9 @@ text = "ctx->r5 = 0;"
 | func_8003C218 / func_8003BB48 / func_8003B908 | 0x8003C230, 0x8003BB98, 0x8003B908 | fork arrows: made (a1 = ways' first spaces), each frame (s1+0xC highlighted way), removed |
 | func_800F6610_GameModeOverworld | 0x800F6880 | 100+ bank stars and Bowser's board bought: flag 0x17 set, so the village opens Eternal Star |
 | omOvlReturnEx | 0x8005DFB8 | skipped once a practice was quit with R (no second return) |
+| func_80056B78 | 0x80056CBC | turns at a new party: 15/20/30 or the picked count |
+| func_800FF328_AdventureModeSetup | 0x800FF3A8, 0x800FFA70, 0x800FFC34, 0x800FF830, 0x800FFF70, 0x800FF610, 0x800FF6A8, 0x800FF74C, 0x80100148 | turn clock: targets 45/135/225, stick to four quarters, choice 1-4, B at ?, the custom picker, Yes on ?, Toad's lines |
+| func_8010042C_AdventureModeSetup / func_80100198 | 0x801004A0 / start | clock numbers and stars laid out and painted; second models follow |
 
 ## Mario Party 2
 
@@ -76,6 +79,11 @@ text = "ctx->r5 = 0;"
 | omOvlGotoEx | 0x800771EC | mode=coaster: Mario Land → the Coaster's pipe room; once in, the title (0x62) or Mini-Game Park event 4 → back to MP1 (`collection_mode_goto`) |
 | func_8007388C_7448C | 0x80073B10, 0x80073B28, 0x80073B4C | Coaster pause, Leave: "Go back to the Mushroom Village?" (for 0x5C9), Yes default, 0x5CA skipped |
 | func_80063308_63F08 | 0x8006358C | new party: message speed Fast (GwSystem+0x26 = 0) |
+| func_80063308_63F08 | 0x80063538 | turns at a new party: 15/20/30 |
+| func_8004AD34_4B934 | 0x8004B08C, 0x8004B0A0, 0x8004B0B4 | minigame reroll until total - 14 |
+| func_8010C268_263368_ChanceTime | 0x8010C330 | Chance Time stage from the turns |
+| func_8010881C (0x5F, 0x60) | start | turn tier tables from the turns |
+| func_80109478_374B78_MinigameParkSetup | 0x801094EC | dial numbers painted 15/20/30 |
 
 ## Mario Party 3
 
@@ -98,6 +106,7 @@ The survey's hooks come first in `us.toml`; the collection's title redirect is c
 | func_80107CEC_modesel | 0x80108550, 0x80108854 | mode=story exit: black fade instead of white; back to MP1 |
 | MBSaveInit_0010C9A4 | 0x800F8F74 | new party: message speed Fast (GwSystem+0x14 = 0) |
 | func_800FC5D8_name_81 | 0x800FC71C | Duel new party: message speed Fast |
+| func_80115EE0_msetup | 0x801163E4, 0x80115F98 | turn presets 15/20/30; dial plates painted |
 
 ## Natives (end of patches/syms.ld)
 
