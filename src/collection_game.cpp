@@ -212,6 +212,19 @@ extern "C" void recomp_collection_active(uint8_t* rdram, recomp_context* ctx) {
     ctx->r2 = active ? 1 : 0;
 }
 
+// recomp_collection_mode(): what Mario Party 1 started this game for: 0 a party (mode=party), 1 its one-player mode
+// (mode=coaster: Mario Party 2's Mini-Game Coaster; mode=story: Mario Party 3's Story Mode); -1 when not started by the
+// collection.
+extern "C" void recomp_collection_mode(uint8_t* rdram, recomp_context* ctx) {
+    check();
+    if (!active) {
+        ctx->r2 = (gpr)(int32_t)-1;
+        return;
+    }
+    const std::string& mode = handoff["mode"];
+    ctx->r2 = (mode == "coaster" || mode == "story") ? 1 : 0;
+}
+
 extern "C" void recomp_collection_return(uint8_t* rdram, recomp_context* ctx) {
     int32_t kind = (int32_t)ctx->r4;
     int32_t stars = (int32_t)ctx->r5;

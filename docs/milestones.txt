@@ -7,3 +7,4 @@
 16  # MP1 practice mode on the minigame rules screen
 20  # no coins lost in minigames; practice in MP2's look
 24  # village Records page; Stadium coin towers kept above the floor
+28  # raft menu: MP1 Island / MP2 Mini-Game Coaster / MP3 Story Mode

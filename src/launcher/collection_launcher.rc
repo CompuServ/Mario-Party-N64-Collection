@@ -1,0 +1,3 @@
+// The launcher's icon: Mario Party 1 Recompiled's (recomp/mp1/icons/app.ico, drawn for that project from plain shapes,
+// nothing from the game).
+IDI_ICON1 ICON "collection.ico"

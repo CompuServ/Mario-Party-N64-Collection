@@ -3,7 +3,8 @@
 // collection's src/). The patches
 // (patches/collection.c) call these natives:
 //
-//   recomp_collection_launch(game): the Party Mode menu's Mario Party 2 or 3. Writes the handoff file (state=out), starts
+//   recomp_collection_launch(game, mode): the Party Mode menu's Mario Party 2 or 3 (mode 0, mode=party in the handoff),
+//     or the raft's (mode 1: mode=coaster for Mario Party 2, mode=story for Mario Party 3). Writes the handoff file (state=out), starts
 //     that game's recomp with --boot and quits this one. 0 if it couldn't (no path for it, or it didn't start): the
 //     game then carries on as Mario Party 1.
 //   recomp_collection_take_return(totals): at boot. 1 when the other game has returned at the end of a party
@@ -102,6 +103,8 @@ namespace {
 
 extern "C" void recomp_collection_launch(uint8_t* rdram, recomp_context* ctx) {
     int32_t game = (int32_t)ctx->r4;
+    // 0 a party; 1 that game's one-player mode (Mario Party 2's Mini-Game Coaster, Mario Party 3's Story Mode).
+    int32_t mode = (int32_t)ctx->r5;
     ctx->r2 = 0;
     fs::path exe_path = own_exe();
     fs::path handoff = handoff_path();
@@ -127,7 +130,7 @@ extern "C" void recomp_collection_launch(uint8_t* rdram, recomp_context* ctx) {
     fields["session"] = new_session();
     fields["target"] = key;
     // What the other game starts in: only Party Mode so far (other modes later, e.g. from the Mini-Game Island raft).
-    fields["mode"] = "party";
+    fields["mode"] = mode == 1 ? (game == 2 ? "coaster" : "story") : "party";
     fields["state"] = "out";
     fields["stars"] = "0";
     fields["coins"] = "0";
