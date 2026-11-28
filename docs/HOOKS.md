@@ -50,7 +50,7 @@ text = "ctx->r5 = 0;"
 | func_800FA3A4_ResultsScene / _ResultsEternalStar2 | 0x800FA584 | bank stars kept to 9,999 instead of 100 |
 | func_800FF0A0_AdventureModeSetup | 0x800FF320 | new party: message speed Fast (GwSystem+0x24 = 2) |
 | func_800F7008_MushroomShop | 0x800F7038 | lock function skipped: every item not yet bought for sale |
-| func_8005A4C0 / func_8005AA88 | 0x8005A99C / 0x8005AB4C, 0x8005ABA0, 0x8005AC20 | village Start pages: Records page made, 960-wide cycle, moved, removed |
+| func_8005A4C0 / func_8005AA88 | 0x8005A99C / 0x8005AB4C, 0x8005ABA0, 0x8005AC20 | village Start pages: Mario Party 1 Records and Mario Party 2 Records pages made (their window pictures in the patches' memory, not the game's heap), 1280-wide cycle, moved, removed |
 | LoadFormFile | 0x80017528, 0x80017554 | rules screen: characters' models noted for the ready-up buttons |
 | func_800F8ED4_MinigameInstructions | 0x800F8F18 | the game's START sign hidden |
 | 0x7B column moves (func_800F6DCC, F72B0, F75C0 x2, F7914, F7CCC) | 0x800F6ECC, 0x800F7598, 0x800F7798, 0x800F78C8, 0x800F7A20, 0x800F7D74 | Stadium coin towers: empty column hidden, a low column kept above the floor and scaled (0x800F6EF8 keeps the scale) |
@@ -69,7 +69,8 @@ text = "ctx->r5 = 0;"
 | func_80066994_67594 | 0x80066ADC | R suppressed |
 | func_8005DA20_5E620 | 0x8005DB1C | pause's menu process → `collection_debug_process` |
 | func_8005DA20_5E620 | 0x8005DB90 | pause's quit branch: End Party / Reset / Quit Game |
-
+| omOvlGotoEx | 0x800771EC | mode=coaster: Mario Land → the Coaster's pipe room; once in, the title (0x62) or Mini-Game Park event 4 → back to MP1 (`collection_mode_goto`) |
+| func_8007388C_7448C | 0x80073B10, 0x80073B28, 0x80073B4C | Coaster pause, Leave: "Go back to the Mushroom Village?" (for 0x5C9), Yes default, 0x5CA skipped |
 | func_80063308_63F08 | 0x8006358C | new party: message speed Fast (GwSystem+0x26 = 0) |
 
 ## Mario Party 3
@@ -88,7 +89,9 @@ The survey's hooks come first in `us.toml`; the collection's title redirect is c
 | func_80105DB4_msetup | 0x80105E08 | B on the Star Lift → back to MP1 |
 | func_8010B82C_msetup | 0x8010B82C | Tumble's message helper: skip 0x1500 / 0x1502 in collection mode (`collection_lift_message`) |
 | func_8010B858_msetup | 0x8010B858 | Tumble's wait helper: returns 0 after a skipped message (`collection_lift_wait`) |
-
+| func_8010BA70_modesel | 0x8010BC74, 0x8010BC90, 0x8010BB00 | mode=story, B on the story map: the question noted, Yes default, "See you later!" (0x3116) skipped |
+| func_80106BA0_modesel | 0x80106CAC | the question's text: a heap copy of "Go back to the Mushroom Village?" for 0x3115 |
+| func_80107CEC_modesel | 0x80108550, 0x80108854 | mode=story exit: black fade instead of white; back to MP1 |
 | MBSaveInit_0010C9A4 | 0x800F8F74 | new party: message speed Fast (GwSystem+0x14 = 0) |
 | func_800FC5D8_name_81 | 0x800FC71C | Duel new party: message speed Fast |
 
@@ -96,6 +99,6 @@ The survey's hooks come first in `us.toml`; the collection's title redirect is c
 
 | Game | Addresses | Natives |
 |---|---|---|
-| MP1 | 0x8F00003C–0x8F00004C | recomp_collection_launch, recomp_collection_take_return, recomp_collection_return_applied, recomp_collection_cache_size, recomp_collection_cache_read |
+| MP1 | 0x8F00003C–0x8F000050 | recomp_collection_launch, recomp_collection_take_return, recomp_collection_return_applied, recomp_collection_cache_size, recomp_collection_cache_read, recomp_collection_mp2_records |
 | MP2 | 0x8F000040, 0x8F000044 | recomp_collection_active, recomp_collection_return |
 | MP3 | 0x8F00002C, 0x8F000030 | recomp_collection_active, recomp_collection_return |

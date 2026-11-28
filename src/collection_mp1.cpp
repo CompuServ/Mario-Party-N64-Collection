@@ -223,3 +223,41 @@ extern "C" void recomp_collection_cache_read(uint8_t* rdram, recomp_context* ctx
     }
     ctx->r2 = data.empty() ? 0 : 1;
 }
+
+// ---- Mario Party 2's records, for Mario Party 1's Records page --------------------------------------------------------
+// recomp_collection_mp2_records(out): read from Mario Party 2's own save each time (<data folder>/MarioParty2Recompiled/
+// saves/marioparty2.n64.us.1.0.bin, its 4 Kbit EEPROM, big-endian: "HUDSON" at 0, its save block from 8 with version 5 at
+// 8, the records as u16s from 0x0A (record i at 0x0A + 2i), and at 0x1F8 the low 16 bits of the sum of bytes 8-0x1F7).
+// Writes Bobsled Run (1), Handcar Havoc (2), Sky Pilots (3) (frames at 60 a second), Mecha-Marathon (4: whole metres in
+// the high byte, hundredths in the low; 0 never played, which Mario Party 2 shows as 20.00) and Slot Car Derby 1-3
+// (5-7, frames at 30 a second) to out as (value, ticks a second) pairs, -1 ticks for a distance. Returns the row count
+// (7), or 0 when there is no valid save.
+extern "C" void recomp_collection_mp2_records(uint8_t* rdram, recomp_context* ctx) {
+    gpr out = ctx->r4;
+    ctx->r2 = 0;
+    fs::path path = collection_platform::data_root() / "MarioParty2Recompiled" / "saves" / "marioparty2.n64.us.1.0.bin";
+    std::ifstream file(path, std::ios::binary);
+    std::vector<uint8_t> save((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    if (save.size() < 0x200 || memcmp(save.data(), "HUDSON", 6) != 0 || save[8] != 5) {
+        return;
+    }
+    uint32_t sum = 0;
+    for (size_t i = 8; i < 0x1F8; i++) {
+        sum += save[i];
+    }
+    if ((sum & 0xFFFF) != (uint32_t)((save[0x1F8] << 8) | save[0x1F9])) {
+        return;
+    }
+    static const int indices[7] = { 1, 2, 3, 4, 5, 6, 7 };
+    static const int rates[7] = { 60, 60, 60, -1, 30, 30, 30 };
+    for (int row = 0; row < 7; row++) {
+        size_t at = 0x0A + 2 * indices[row];
+        int32_t value = (save[at] << 8) | save[at + 1];
+        if (rates[row] == -1 && value == 0) {
+            value = 20 << 8;
+        }
+        MEM_W(row * 8, out) = value;
+        MEM_W(row * 8 + 4, out) = rates[row];
+    }
+    ctx->r2 = 7;
+}
