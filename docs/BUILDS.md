@@ -55,12 +55,15 @@ build-011 on, `collection.ini` holds paths relative to MP1's folder.
 
 | 028 ★ | MP1 raft: A asks "Pick a Mario Party." (Warp Pipe's window; hook 0x800F7C10): MP1 Mini-Game Island (on to the game's own question), MP2 Mini-Game Coaster, MP3 Story Mode (handoff mode=coaster / story via recomp_collection_launch(game, 1)); B back to the cursor. MP2 (recomp_collection_mode): mode=coaster sends the title's Start to Mini-Game Park (0x5C, 0, 0x14) instead of Mario Land; in collection mode the boot (0x8001C6F8) ORs the 56 priced minigames into the save's played and bought bitfields (0x800F8C7C, 0x800F8C85; MP2 keeps bits, not counts), which opens the Coaster; records untouched. MP3: mode=story takes file select's Story path with file 1 (flag 0x28 → mode select; else storycall 0x75 at the save's chapter). MP2's "Leave the Warp Pipe?" reads "Go back to the Mushroom Village?". MP1 ready up: a 10-frame hold after the last press so every button shows dimmed. Launcher has the recomp's icon (src/launcher/collection_launcher.rc). | by script: raft menu shows, B back, MP1 choice → "Where will you start from?"; MP2 choice → MP2 opens in Mini-Game Land, Coaster unlocked and entered ("Welcome to Mini-Game Coaster!"); MP3 story → the saved story resumes (its next chapter's scene); launcher icon seen. Not run: MP2 pipe text, the last-button hold. Found: Woody's shop in Mini-Game Land in coaster mode went to a black screen. Returns from Coaster/Story to MP1 come next build |
 
+| 029 | MP2 mode=coaster: the title's Start goes straight to the Coaster's pipe room (0x58, event 3, stat 0x1011), game flag 0x13 set and the history entry under it made Mini-Game Park's event 4 (where the Coaster returns), as Mini-Game Park's Coaster choice does. The Coaster's "What?!? You're leaving?" (0x58D, through func_80110350 as 0x53) reads "Go back to the Mushroom Village?". MP3 mode=story: always the story map (mode select 0x77, history title/modesel), not storycall, which replayed the last chapter's clear scene (the Wit Star Stamp). | by script: MP3 opens on STORY MODE EASY ("let's go to Chilly Waters!"); MP2 opens in the Coaster's pipe room, B shows the new question, No → partner select → the Coaster starts. Known issue: Woody's shop in Mini-Game Land (coaster mode, build-028) goes to a black screen; no longer reachable from the raft path |
+
 ★ milestone.
 
 ## Not yet verified
 
 - build-025's ready up with several human controllers (scripts drive one keyboard).
-- Any Linux package (none built yet). The MP2/MP3 → MP1 return through build-026's shared launch code is checked (build-027).
+- Any Linux package (none built yet).
+- Known issue: MP2's Woody shop (Mini-Game Land) went to a black screen when entered with the Coaster unlocked by the collection (build-028); its save flags are a suspect. The MP2/MP3 → MP1 return through build-026's shared launch code is checked (build-027).
 - The backdrop between games was black throughout in a fullscreen MP1 → MP2 switch (build-026, started through the launcher): if the desktop still shows, check the collection was started with `Mario Party Collection.exe`.
 
 Confirmed by hand (2026-11-27, build-025/026): practice on Mini-Game Island; settings changed in MP2/MP3's menus reach
