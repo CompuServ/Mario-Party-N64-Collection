@@ -14,3 +14,7 @@ https://github.com/n64hub/mario-party-3-recomp
 License:
 
 GPLv3, see license.md for details
+
+
+Windows x86-64 Installation Instructions
+
