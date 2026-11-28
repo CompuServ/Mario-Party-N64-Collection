@@ -51,28 +51,17 @@ build-011 on, `collection.ini` holds paths relative to MP1's folder.
 
 | 026 | Collection code portable to Linux (and macOS paths): `src/collection_platform.hpp` gives the data folder (%LOCALAPPDATA%, ~/.config, ~/Library/Application Support: where RecompFrontend keeps each recomp's), this program's path (/proc/self/exe on Linux), starting another game (fork + setsid + exec on Linux, from its own folder with --boot) and collection.ini paths with either slash (a Windows `.exe` name found without it). `collection_mp1.cpp`, `collection_game.cpp` (handoff, shared settings, return) and `collection_cache.hpp` (stored ROM as `<program id lowercased>.n64.us.1.0.z64`) use it; `collection_window.hpp`'s handover is a no-op off Windows (no launcher there yet). Windows behaviour unchanged. No Linux package built (only on request). | Windows: all three rebuilt; MP1 → MP2 launch (handoff written, MP2 in collection mode). WSL Ubuntu (clang 21): the shared headers compile clean with -Wall -Wextra; paths, start_exe and the cache checked: the Linux-built cache byte-identical to Windows'. MP2 → MP1 return not run |
 
+| 027 | Build folder: only `Mario Party Collection.exe` (the launcher, renamed) at the top; Mario Party 1 in `MP1\` with its `collection.ini` (`..\MP2\...`, `..\MP3\...`); the launcher starts `MP1\MarioPartyRecompiled.exe` (older layouts: beside it). MP2 in collection mode: the warp pipe room's "Leave the Warp Pipe?" Yes goes to MP1's village (hook 0x80110A7C in func_80110A28_37C128_MinigameParkSetup, its omOvlReturnEx(1) to Mario Land); B on the board select (hook 0x80103340 in func_80102C88_37F938_name_5B) has Toad ask "Go back to the Mushroom Village?" Yes/No in his window (the 0xCE question's way), Yes fades and goes back, No puts the board's description back. MP3: Tumble's 0x1501 "Go back to the Castle Grounds?" reads "Go back to the Mushroom Village?" (same green, through collection_lift_message). | by script, started through `Mario Party Collection.exe`: MP1 from MP1\; MP1 → MP2, B on the board select (Yes default, No restores the description, Yes → MP1's village with black between); warp pipe Yes → village; MP1 → MP3, Tumble's new question, Yes → village. Fullscreen backdrop (build-026): black throughout MP1 → MP2, no desktop |
+
 ★ milestone.
 
 ## Not yet verified
 
 - build-025's ready up with several human controllers (scripts drive one keyboard).
-- build-026: the MP2/MP3 → MP1 return through the new shared launch code (MP1 → MP2 checked); any Linux package (none built yet).
+- Any Linux package (none built yet). The MP2/MP3 → MP1 return through build-026's shared launch code is checked (build-027).
+- The backdrop between games was black throughout in a fullscreen MP1 → MP2 switch (build-026, started through the launcher): if the desktop still shows, check the collection was started with `Mario Party Collection.exe`.
 
 Confirmed by hand (2026-11-27, build-025/026): practice on Mini-Game Island; settings changed in MP2/MP3's menus reach
 MP1's; the debug menus of all three games open when intended on the player's turn (banner hold included); end-of-party
 results add stars and coins to MP1 correctly (MP2's totals after the latch fix included); every game's Quit returns as
 designed; the debug items hit controller 1's player.
-
-## Next (build-027, when the user starts it)
-
-1. MP2's warp pipe after a board is picked ("Leave the Warp Pipe? Yes No"): Yes goes back to MP1's Mushroom Village
-   (the handoff's quit, as Quit Game does), not MP2's own warp pipe room.
-2. MP2's board select (Toad, "Horror Land / Difficulty…"): B asks "Go back to the Mushroom Village?" Yes (default) No,
-   in the same window, font and choice layout as its "Hear about the rules of the game?" question; Yes returns to MP1's
-   village, so a player can change their game pick.
-3. MP3's Star Lift: Tumble's B question "Go back to the Castle Grounds?" reads "Go back to the Mushroom Village?",
-   "Mushroom Village" in the same green; Yes already returns to MP1 (check it goes to the village).
-4. Black backdrop between games in fullscreen not seen by the user on the latest builds: check it is started through
-   `MarioPartyCollection.exe` (the backdrop only exists then; the games alone show the desktop between them); if it
-   was, find why build-026's handover no longer reaches the launcher (collection_window.hpp is now always included,
-   its Windows half unchanged).

@@ -1,4 +1,5 @@
-// Mario Party N64 Collection: the launcher (MarioPartyCollection.exe, beside Mario Party 1's exe in a build folder).
+// Mario Party N64 Collection: the launcher ("Mario Party Collection.exe", the one program at the top of a build folder;
+// Mario Party 1 is in its MP1\ folder, Mario Party 2 and 3 in MP2\ and MP3\).
 // Start the collection here: it starts Mario Party 1 and stays in the background, so that when one game hands over to
 // another (Mario Party 1's Party Mode menu to Mario Party 2 or 3, and back) the player sees black, not the desktop,
 // between the two, windowed or fullscreen.
@@ -231,11 +232,15 @@ namespace {
     }
 
     bool start_mario_party_1() {
-        std::filesystem::path folder = own_folder();
-        std::filesystem::path exe = folder / L"MarioPartyRecompiled.exe";
+        // MP1\ beside the launcher (from build-027), or beside it (older builds).
+        std::filesystem::path folder = own_folder() / L"MP1";
         std::error_code ec;
+        if (!std::filesystem::exists(folder / L"MarioPartyRecompiled.exe", ec)) {
+            folder = own_folder();
+        }
+        std::filesystem::path exe = folder / L"MarioPartyRecompiled.exe";
         if (!std::filesystem::exists(exe, ec)) {
-            MessageBoxW(nullptr, L"MarioPartyRecompiled.exe isn't beside the collection's launcher.",
+            MessageBoxW(nullptr, L"Mario Party 1 (MP1\\MarioPartyRecompiled.exe) isn't beside the collection's launcher.",
                         L"Mario Party N64 Collection", MB_ICONERROR);
             return false;
         }

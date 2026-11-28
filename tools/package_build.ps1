@@ -4,12 +4,13 @@ build-002, ...), so every build stays runnable on its own and can be compared wi
 last 10 builds plus the milestones listed in docs\milestones.txt (one build number a line).
 
 Each bin\build-NNN folder holds:
-  MarioPartyCollection.exe  the collection's launcher (start here): starts Mario Party 1, black between games.
-  MarioPartyRecompiled.exe + SDL2.dll, dxil.dll, dxcompiler.dll, recompcontrollerdb.txt, LICENSE, assets\
-      Mario Party 1, what tools/release.sh puts in a release; it runs from its own folder (double-click the exe).
-      Start the collection here.
+  Mario Party Collection.exe  the collection's launcher, the one program at the top (start here): starts Mario Party 1,
+                          black between games.
+  MP1\                    Mario Party 1: MarioPartyRecompiled.exe + SDL2.dll, dxil.dll, dxcompiler.dll,
+                          recompcontrollerdb.txt, LICENSE, assets\ (what tools/release.sh puts in a release; it runs from
+                          its own folder), and collection.ini: where it finds the MP2 and MP3 exes, relative to its own
+                          folder (..\MP2\..., ..\MP3\...). The home of anything else that is Mario Party 1's.
   MP2\, MP3\              Mario Party 2 and 3 the same way (MarioParty2Recompiled.exe, MarioParty3Recompiled.exe).
-  collection.ini          where MP1 finds the MP2 and MP3 exes, relative to its own folder (MP2\..., MP3\...).
   changes\mp1|mp2|mp3\changes.patch   git diff of each recomp against its upstream commit (us.toml, patches\, src\,
                           CMakeLists.txt), new files included; changes\mpN\files\ copies of every changed or new file.
   BUILD.txt               build number, date, each recomp's commit and the notes given with -Notes.
@@ -33,7 +34,7 @@ $Sources = (Resolve-Path $Sources).Path
 $Out = (Resolve-Path $Out).Path
 
 $games = @(
-    @{ Key = "mp1"; Exe = "MarioPartyRecompiled.exe"; Sub = "" },
+    @{ Key = "mp1"; Exe = "MarioPartyRecompiled.exe"; Sub = "MP1" },
     @{ Key = "mp2"; Exe = "MarioParty2Recompiled.exe"; Sub = "MP2" },
     @{ Key = "mp3"; Exe = "MarioParty3Recompiled.exe"; Sub = "MP3" }
 )
@@ -93,7 +94,7 @@ if ($collectionCommit) { $info += "collection: $collectionCommit" }
 # between games.
 $launcher = "$PSScriptRoot\..\build\launcher\MarioPartyCollection.exe"
 if (Test-Path $launcher) {
-    Copy-Item $launcher $dest
+    Copy-Item $launcher (Join-Path $dest "Mario Party Collection.exe")
 } else {
     Write-Warning "No launcher at $launcher (tools\build_launcher.cmd): this build has none."
 }
@@ -101,9 +102,9 @@ if (Test-Path $launcher) {
 # Where MP1's handoff (src/collection_mp1.cpp) finds the other games: this build's own, relative to MP1's folder.
 @"
 # Mario Party N64 Collection: the other games' exes, for MP1's Party Mode menu (relative to this folder).
-mp2=MP2\MarioParty2Recompiled.exe
-mp3=MP3\MarioParty3Recompiled.exe
-"@ | Set-Content (Join-Path $dest "collection.ini") -Encoding ascii
+mp2=..\MP2\MarioParty2Recompiled.exe
+mp3=..\MP3\MarioParty3Recompiled.exe
+"@ | Set-Content (Join-Path (Join-Path $dest "MP1") "collection.ini") -Encoding ascii
 
 @"
 $name
