@@ -261,3 +261,4 @@ extern "C" void recomp_collection_mp2_records(uint8_t* rdram, recomp_context* ct
     }
     ctx->r2 = 7;
 }
+
