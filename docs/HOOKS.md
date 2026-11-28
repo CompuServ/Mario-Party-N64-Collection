@@ -58,6 +58,7 @@ text = "ctx->r5 = 0;"
 | func_8005727C (turn loop) | 0x800576FC, 0x8005771C | spaces to the star: dice block up (graph built, label made) / roll done (label removed) |
 | func_800417B4 (dice block process) | 0x800417EC | label placed under the player each frame |
 | func_8003C218 / func_8003BB48 / func_8003B908 | 0x8003C230, 0x8003BB98, 0x8003B908 | fork arrows: made (a1 = ways' first spaces), each frame (s1+0xC highlighted way), removed |
+| func_800F6610_GameModeOverworld | 0x800F6880 | 100+ bank stars and Bowser's board bought: flag 0x17 set, so the village opens Eternal Star |
 | omOvlReturnEx | 0x8005DFB8 | skipped once a practice was quit with R (no second return) |
 
 ## Mario Party 2
